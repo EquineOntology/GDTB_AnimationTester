@@ -13,7 +13,7 @@ public class AnimationShell : MonoBehaviour
 
     private AnimationClip[] _clips;
  
-    private void Start()
+    private void Awake()
     {
         if (!Application.isPlaying)
         {
@@ -27,7 +27,7 @@ public class AnimationShell : MonoBehaviour
     /// Creates an array containing the names of the clips.
     /// </summary>
     /// <param name="animationClips">The array containing the animation clips.</param>
-    /// <returns>The array populated with the clip names.</returns>
+    /// <returns>An array populated with the clip names.</returns>
     private string[] GetAnimationClipNames(AnimationClip[] animationClips)
     {
         var nameHolder = new string[animationClips.Length];
