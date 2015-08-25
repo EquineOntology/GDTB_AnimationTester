@@ -655,10 +655,7 @@ GameObject:
   m_Component:
   - 4: {fileID: 408730}
   - 95: {fileID: 9579096}
-  - 54: {fileID: 5426510}
-  - 136: {fileID: 13615390}
-  - 114: {fileID: 11444856}
-  - 114: {fileID: 11469404}
+  - 114: {fileID: 11405416}
   m_Layer: 0
   m_Name: ThirdPersonController
   m_TagString: Untagged
@@ -1365,7 +1362,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 149790}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -31.2000008, y: 0, z: 16.2000008}
+  m_LocalPosition: {x: -6.79305077, y: .0500000007, z: 3.22111917}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 469942}
@@ -2358,21 +2355,6 @@ Transform:
   - {fileID: 489522}
   m_Father: {fileID: 449582}
   m_RootOrder: 0
---- !u!54 &5426510
-Rigidbody:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149790}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: .0500000007
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 0
-  m_CollisionDetection: 0
 --- !u!95 &9579096
 Animator:
   serializedVersion: 3
@@ -2390,7 +2372,7 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &11444856
+--- !u!114 &11405416
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -2398,41 +2380,37 @@ MonoBehaviour:
   m_GameObject: {fileID: 149790}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 521b611700410be45810047f0a74e899, type: 3}
+  m_Script: {fileID: 11500000, guid: 3c25c71e7da2d944ca8887cc6effba96, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &11469404
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149790}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce7a80d520cacc042b5fe14f373d8173, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MovingTurnSpeed: 360
-  m_StationaryTurnSpeed: 180
-  m_JumpPower: 6
-  m_GravityMultiplier: 2
-  m_RunCycleLegOffset: .200000003
-  m_MoveSpeedMultiplier: 1
-  m_AnimSpeedMultiplier: 1
-  m_GroundCheckDistance: .300000012
---- !u!136 &13615390
-CapsuleCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 149790}
-  m_Material: {fileID: 13400000, guid: cf63880488ec29f43a759ecd9c6c5123, type: 2}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: .300000012
-  m_Height: 1.60000002
-  m_Direction: 1
-  m_Center: {x: 0, y: .800000012, z: 0}
+  _animator: {fileID: 9579096}
+  AnimationClipNames:
+  - HumanoidIdle
+  - StandQuarterTurnRight
+  - StandHalfTurnRight
+  - StandQuarterTurnLeft
+  - StandHalfTurnLeft
+  - HumanoidWalk
+  - HumanoidWalkRightSharp
+  - HumanoidWalkRight
+  - HumanoidWalkLeftSharp
+  - HumanoidWalkLeft
+  - HumanoidRun
+  - HumanoidRunRightSharp
+  - HumanoidRunLeftSharp
+  - HumanoidRunRight
+  - HumanoidRunLeft
+  - HumanoidCrouchIdle
+  - HumanoidCrouchWalk
+  - HumanoidCrouchWalkLeft
+  - HumanoidCrouchWalkRightB
+  - HumanoidMidAirRight
+  - HumanoidJumpForwardRight
+  - HumanoidJumpForwardLeft
+  - HumanoidFall
+  - HumanoidMidAirLeft
+  - HumanoidJumpUp
+  - HumanoidMidAir
 --- !u!137 &13736924
 SkinnedMeshRenderer:
   m_ObjectHideFlags: 1
