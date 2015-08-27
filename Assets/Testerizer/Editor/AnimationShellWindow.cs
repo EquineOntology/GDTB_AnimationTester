@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using System;
 
 public class AnimationShellWindow : EditorWindow 
 {	
 	// Animatables: gameobjects with Animator component.
-	//[SerializeField]
 	private List<Animator> _animatables;
 	private bool _collectedAnimatables = false;
 	private string[] _animatableNames;	
@@ -20,19 +18,25 @@ public class AnimationShellWindow : EditorWindow
 	// CONSTANTS
 	private const string ANIMATABLES_LIST = "Select gameobject: ";
 	private const string ANIMATABLE_CLIPS_LIST = "Select clip: ";
-	private const string UPDATE_ANIMATABLES_LIST = "Update";
-	private const string UPDATE_CLIP_NAMES_LIST = "Update";
+	private const string UPDATE_ANIMATABLES_LIST = "Refresh list";
+	private const string UPDATE_CLIP_NAMES_LIST = "Refresh list";
 	
-	private const int LABEL_WIDTH = 150;
+	private const string ERROR_NO_ANIMATABLES = "There are no gameobjects with an Animator component in the scene.";
+    private const string ERROR_ANIMATABLE_NOT_FOUND = "The selected gameobject was not found.\nDid you remove the object while the window was open? If so, please click on \"Refresh list\" and try again.";
+    private const int LABEL_WIDTH = 150;
 	private const int POPUP_WIDTH = 150;
-	private const int BUTTON_WIDTH = 50;
-	
-	[MenuItem ("Testerizer/Load Animation Shell")]
+	private const int BUTTON_WIDTH = 100;
+
+    private const int EDITOR_WINDOW_MINSIZE_X = 300;
+    private const int EDITOR_WINDOW_MINSIZE_Y = 200;
+
+    [MenuItem ("Testerizer/Load Animation Shell")]
 	static void Init ()
 	{		
 		// Get existing open window or if none, make a new one.
 		var window = (AnimationShellWindow)EditorWindow.GetWindow (typeof (AnimationShellWindow));
-		window.Show();
+        window.minSize = new Vector2(EDITOR_WINDOW_MINSIZE_X, EDITOR_WINDOW_MINSIZE_Y);
+        window.Show();
 	}
 	
 	private void OnEnable()
@@ -42,7 +46,7 @@ public class AnimationShellWindow : EditorWindow
 		{
 			_animatables = CollectAnimatables();
 			_collectedAnimatables = true;
-			_animatableNames = GetAnimatableNames(_animatables);
+			_animatableNames = GetAnimatableNames();
 			//Debug.Log("Collected animatables!");
 		}
 	}
@@ -50,48 +54,55 @@ public class AnimationShellWindow : EditorWindow
 	private void OnGUI ()
 	{
 		EditorGUILayout.BeginVertical();
-		GUILayout.Space(10);
+		GUILayout.Space(15);
 		DrawListOfAnimatables();
-		GUILayout.Space(10);
-		if(_animatables != null)
-		{
-			try
-			{
-				DrawListOfAnimations(_animatables[_currentAnimatablesIndex]);
-				//Debug.Log("Drawing list of animations");
-			}
-			catch(Exception e)
-			{
-				Debug.Log(e.Source);
-				_animatables = null;
-				_currentAnimatablesIndex = -1;
-				_collectedAnimatables = false;
-				
-				NullAnimatableClips();
-			}
-		}
-		else
-		{
-			if(_animatableClips != null)
-			{
-				NullAnimatableClips();
-			}
-		}
-		EditorGUILayout.EndVertical();
+		GUILayout.Space(15);
+		
+        if (_animatables != null && _currentAnimatablesIndex < _animatables.Count)
+        {
+            DrawListOfAnimations(_animatables[_currentAnimatablesIndex]);		
+        }
+        /*try
+        {
+
+            
+        }
+        catch(Exception)
+        {
+            //Debug.LogWarning(ERROR_NO_ANIMATABLES);
+            _animatables = null;
+            _currentAnimatablesIndex = -1;
+            _collectedAnimatables = false;
+
+            NullAnimatableClips();
+        }
+        if (_animatableClips != null)
+        {
+            NullAnimatableClips();
+        }*/
+        EditorGUILayout.EndVertical();
 	}
 	
 	private void DrawListOfAnimatables()
 	{
-		EditorGUILayout.BeginVertical();	
-		EditorGUILayout.LabelField(ANIMATABLES_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
+		//Debug.Log("Drawing list of animations");
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField(ANIMATABLES_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
 						
 		EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(10);
+        var tempIndex = _currentAnimatablesIndex;
 		_currentAnimatablesIndex = EditorGUILayout.Popup(_currentAnimatablesIndex, _animatableNames, GUILayout.Width(POPUP_WIDTH));
-		GUILayout.Space(5);
+
+        // If the selected animatable changes, update the list of animations.
+        if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < _animatables.Count)
+        {
+            UpdateClipsAndNames(_animatables[_currentAnimatablesIndex]);
+        }
+        GUILayout.Space(5);
 		if(GUILayout.Button(UPDATE_ANIMATABLES_LIST, GUILayout.Width(BUTTON_WIDTH)))
 		{
 			UpdateAnimatables();
-			Repaint();
 		}
 		EditorGUILayout.Space();
 		EditorGUILayout.EndHorizontal();
@@ -101,88 +112,83 @@ public class AnimationShellWindow : EditorWindow
 	
 	private void DrawListOfAnimations(Animator animatable)
 	{
-		if(_animatableClips == null)
-		{			
-			UpdateClipsAndNames(animatable);
-		}
-		
-		EditorGUILayout.BeginVertical();
-		EditorGUILayout.LabelField(ANIMATABLE_CLIPS_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
-		
-		EditorGUILayout.BeginHorizontal();
-		_currentClipIndex = EditorGUILayout.Popup(_currentClipIndex, _animatableClipNames, GUILayout.Width(POPUP_WIDTH));
-		GUILayout.Space(5);
-		if(GUILayout.Button(UPDATE_CLIP_NAMES_LIST, GUILayout.Width(BUTTON_WIDTH)))
-		{
-			UpdateClipsAndNames(animatable);
-			Repaint();
-		}
-		EditorGUILayout.Space();
-		EditorGUILayout.EndHorizontal();
-		
-		EditorGUILayout.EndVertical();		
-	}
+		bool updatedClipLists = UpdateClipsAndNames(animatable);
+
+        if (updatedClipLists == true)
+        {
+            EditorGUILayout.BeginVertical();
+            EditorGUILayout.LabelField(ANIMATABLE_CLIPS_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
+
+            EditorGUILayout.BeginHorizontal();
+            GUILayout.Space(10);
+            _currentClipIndex = EditorGUILayout.Popup(_currentClipIndex, _animatableClipNames, GUILayout.Width(POPUP_WIDTH));
+            GUILayout.Space(5);
+            if (GUILayout.Button(UPDATE_CLIP_NAMES_LIST, GUILayout.Width(BUTTON_WIDTH)))
+            {
+                UpdateClipsAndNames(animatable);
+            }
+            EditorGUILayout.Space();
+            EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.EndVertical();
+        }
+    }
 	
-	/// <summary>
-	/// Updates the "animatables" list.
-	/// </summary>
 	private void UpdateAnimatables()
 	{
-		_animatables = CollectAnimatables();
-		//Debug.Log("Updating \"animatables\" list");
-	}
+        if (_animatables != null)
+        {
+            _animatables.Clear();
+        }
+        _animatables = CollectAnimatables();
+        _animatableNames = GetAnimatableNames();
+        //Debug.Log("Updating \"animatables\" list");
+    }
 	
-	/// <summary>
-	/// Updates an animator's list of clips (and their names).
-	/// </summary>
-	/// <param name="animatable">The animator whose clips you want listed.</param>
-	private void UpdateClipsAndNames(Animator animatable)
+	private bool UpdateClipsAndNames(Animator animatable)
 	{
-		_animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
-		_animatableClipNames = GetAnimationClipNames(_animatableClips);
-		//Debug.Log("Updating \"clips\" list");
-	}
+        if (UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject) != null)
+        {
+            _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
+            _animatableClipNames = GetAnimationClipNames(_animatableClips);
+            
+			// Only return true if there is actually something in those arrays.
+			if(_animatableClips.Length > 0)
+			{
+                return true;
+            }
+        }
+        return false;
+        //Debug.Log("Updating \"clips\" lists");
+        
+    }
 	
-	/// <summary>
-	/// Collects all objects with an Animator component in the scene, and puts them in a list.
-	/// </summary>
-	/// <returns>A List<Animator> populated with all objects with an animator in the scene.</returns>
 	private List<Animator> CollectAnimatables()
 	{
 		var allObjectsInScene = GameObject.FindObjectsOfType<GameObject>();
-		var animatorsInScene = new List<Animator>();
+        var animatorsInScene = new List<Animator>();
 		
-		foreach(var go in allObjectsInScene)
+        foreach(var go in allObjectsInScene)
 		{
 			if(go.activeInHierarchy && go.GetComponent<Animator>() != null)
 			{
 				animatorsInScene.Add(go.GetComponent<Animator>());
-			}
+            }
 		}		
 		return animatorsInScene;
 	}
 	
-	/// <summary>
-    /// Creates an array containing the names of the animatable gameobjects.
-    /// </summary>
-    /// <param name="animatables">The list of animatables.</param>
-    /// <returns>An array populated with the names.</returns>
-	private string[] GetAnimatableNames(List<Animator> animatables)
+	private string[] GetAnimatableNames()
 	{
-		var names = new string[animatables.Count];
-		for(int i = 0; i < animatables.Count; i++)
+		var names = new string[_animatables.Count];
+		for(int i = 0; i < _animatables.Count; i++)
 		{
-			names[i] = animatables[i].gameObject.name;	
-		}		
+			names[i] = _animatables[i].gameObject.name;
+        }		
 		return names;
 	}
 	
-	/// <summary>
-    /// Creates an array containing the names of the clips.
-    /// </summary>
-    /// <param name="animationClips">The array containing the animation clips.</param>
-    /// <returns>An array populated with the clip names.</returns>
-    private string[] GetAnimationClipNames(AnimationClip[] animationClips)
+	private string[] GetAnimationClipNames(AnimationClip[] animationClips)
     {
         var nameHolder = new string[animationClips.Length];
         for (int i = 0; i < animationClips.Length; i++)
@@ -196,6 +202,13 @@ public class AnimationShellWindow : EditorWindow
 	{
 		_animatableClips = null;
 		_animatableClipNames = null;
-		_currentClipIndex = -1;
+		_currentClipIndex = 0;
 	}
+
+    private void OnHierarchyChange()
+    {
+        UpdateAnimatables();
+        _currentAnimatablesIndex = 0;
+        _currentClipIndex = 0;
+    }
 }
