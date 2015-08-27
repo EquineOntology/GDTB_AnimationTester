@@ -24,9 +24,6 @@ public class AnimationShellInspector : Editor
         _showButtons.valueChanged.AddListener(Repaint);
     }
 
-    /// <summary>
-    /// Draw the inspector.
-    /// </summary>
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
@@ -47,9 +44,6 @@ public class AnimationShellInspector : Editor
         EditorGUILayout.EndFadeGroup();
     }
 
-    /// <summary>
-    /// Draw the stats of the animation currently playing.
-    /// </summary>
     private void DrawCurrentAnimationStats()
     {
         EditorGUILayout.BeginVertical();
@@ -64,9 +58,6 @@ public class AnimationShellInspector : Editor
         EditorGUILayout.EndVertical();
     }
 
-    /// <summary>
-    /// Draw the list of animations.
-    /// </summary>
     private void DrawAnimationsPanel()
     {
         EditorGUILayout.BeginHorizontal();
@@ -93,11 +84,6 @@ public class AnimationShellInspector : Editor
         }
     }
 
-    /// <summary>
-    /// Makes a camelCase string pretty.
-    /// </summary>
-    /// <param name="originalString">The string you want beautified.</param>
-    /// <returns>A beautifully subdivided and capitalized string.</returns>
     private string BeautifyString(string originalString)
     {
         var workString = originalString;        
@@ -107,10 +93,7 @@ public class AnimationShellInspector : Editor
         return beautifulString;
     }
 
-    /// <summary>
-    /// Initializations.
-    /// </summary>
-    private void InitializeVariables()
+   private void InitializeVariables()
     {
         _aniShell = serializedObject.targetObject as AnimationShell;
         _showButtons = new AnimBool(false);   
@@ -122,12 +105,7 @@ public class AnimationShellInspector : Editor
         }
     }
     
-    /// <summary>
-    /// Splits a camelCase string in words.
-    /// </summary>
-    /// <param name="originalString">The string you want split.</param>
-    /// <returns>A string with divided words.</returns>    
-    public string SplitCamelCase(string originalString)
+   public string SplitCamelCase(string originalString)
     {
         var splitString = System.Text.RegularExpressions.Regex.Replace(originalString, "([A-Z])", " $1", System.Text.RegularExpressions.RegexOptions.Compiled).Trim();
         return splitString;      
