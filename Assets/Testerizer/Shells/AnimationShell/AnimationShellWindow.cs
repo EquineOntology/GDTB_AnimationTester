@@ -9,12 +9,21 @@ public class AnimationShellWindow : EditorWindow
 	private bool _collectedAnimatables = false;
 	private string[] _animatableNames;	
 	private int _currentAnimatablesIndex = 0;
-	
-	// AnimatableClips: Animation Clips of an animatable.
-	private AnimationClip[] _animatableClips;
+
+    // ControllersBackup: a backup of all original animator controllers.
+    // Used to reassign the original controller to an animator.
+    private Dictionary<int, RuntimeAnimatorController> _controllersBackup = new Dictionary<int, RuntimeAnimatorController>();
+
+    // AnimatableClips: Animation Clips of an animatable.
+    private AnimationClip[] _animatableClips;
 	private int _currentClipIndex = 0;
 	private string[] _animatableClipNames;
     private bool _shouldUpdateClips = true;
+    
+    // ClipNamesBackup: a "backup" of the clip names of an animatable.
+    // This is needed because otherwise, when refreshing the list of clips when another animatable is selected,
+    // the controller that will be examined is the test one, which only has a single clip in it.
+    private Dictionary<int,string[]> _clipNamesBackup = new  Dictionary<int,string[]>();
 
     // CONSTANTS
     private const string ANIMATABLES_LIST = "Select gameobject: ";
@@ -38,7 +47,7 @@ public class AnimationShellWindow : EditorWindow
     [MenuItem ("Testerizer/Load Animation Shell")]
 	static void Init ()
 	{		
-		// Get existing open window or if none, make a new one.
+		// Get existing open window or, if none exists, make a new one.
 		var window = (AnimationShellWindow)EditorWindow.GetWindow (typeof (AnimationShellWindow));
         window.minSize = new Vector2(EDITOR_WINDOW_MINSIZE_X, EDITOR_WINDOW_MINSIZE_Y);
         window.Show();
@@ -46,14 +55,19 @@ public class AnimationShellWindow : EditorWindow
 	
 	private void OnEnable()
 	{
-		// Populate list of gameobjects with animator, but only if it isn't already.
+		// Populate list of gameobjects with animator, but only once.
 		if(_collectedAnimatables == false)
 		{
 			_animatables = AnimationShellHelper.GetObjectsWithAnimator();
 			_collectedAnimatables = true;
 			_animatableNames = AnimationShellHelper.GetNames(_animatables);
-			//Debug.Log("Collected animatables!");
-		}
+            
+            // Build the backups.
+            _clipNamesBackup = AnimationShellHelper.BuildClipNamesBackup(_animatables);
+            _controllersBackup = AnimationShellHelper.BuildControllersBackup(_animatables);
+
+            //Debug.Log("Collected animatables!");
+        } 
 	}
 	
 	private void OnGUI ()
@@ -62,7 +76,6 @@ public class AnimationShellWindow : EditorWindow
 		GUILayout.Space(15);
 		DrawListOfAnimatables();
 		GUILayout.Space(15);
-		
         if (_animatables != null && _currentAnimatablesIndex < _animatables.Count)
         {
             DrawListOfAnimations(_animatables[_currentAnimatablesIndex]);
@@ -85,8 +98,8 @@ public class AnimationShellWindow : EditorWindow
         // If the selected animatable changes, update the list of animations.
         if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < _animatables.Count)
         {
-            _shouldUpdateClips = false;
-            UpdateClipsAndNames(_animatables[_currentAnimatablesIndex]);        
+            ResetToPreviousAnimator(_animatables[tempIndex]);
+            _shouldUpdateClips = true;      
         }
         
         GUILayout.Space(5);
@@ -99,38 +112,33 @@ public class AnimationShellWindow : EditorWindow
 		
 		EditorGUILayout.EndVertical();
 	}
-	
-    // Draws the popup with the list of animations.
-	private void DrawListOfAnimations(Animator animatable)
-	{
-		bool updatedClipLists = true;
 
+    // Draws the popup with the list of animations.
+    private void DrawListOfAnimations(Animator animatable)
+    {
         if (_shouldUpdateClips == true)
         {
-            UpdateClipsAndNames(animatable);
+            UpdateClips(animatable);
             _shouldUpdateClips = false;
         }
+        EditorGUILayout.BeginVertical();
+        EditorGUILayout.LabelField(ANIMATABLE_CLIPS_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
 
-        if (updatedClipLists == true)
+        EditorGUILayout.BeginHorizontal();
+        GUILayout.Space(10);
+        _currentClipIndex = EditorGUILayout.Popup(_currentClipIndex, _animatableClipNames, GUILayout.Width(POPUP_WIDTH));
+        GUILayout.Space(5);
+        if (GUILayout.Button(UPDATE_CLIP_NAMES_LIST, GUILayout.Width(BUTTON_WIDTH)))
         {
-            EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField(ANIMATABLE_CLIPS_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
-
-            EditorGUILayout.BeginHorizontal();
-            GUILayout.Space(10);
-            _currentClipIndex = EditorGUILayout.Popup(_currentClipIndex, _animatableClipNames, GUILayout.Width(POPUP_WIDTH));
-            GUILayout.Space(5);
-            if (GUILayout.Button(UPDATE_CLIP_NAMES_LIST, GUILayout.Width(BUTTON_WIDTH)))
-            {
-                UpdateClipsAndNames(animatable);
-            }
-            EditorGUILayout.Space();
-            EditorGUILayout.EndHorizontal();    
-                    
-            GUILayout.Space(20);
-            DrawPlayButton();
-            EditorGUILayout.EndVertical();
+            
+            UpdateClips(animatable);
         }
+        EditorGUILayout.Space();
+        EditorGUILayout.EndHorizontal();
+
+        GUILayout.Space(20);
+        DrawPlayButton();
+        EditorGUILayout.EndVertical();
     }
 
     private void DrawPlayButton()
@@ -154,45 +162,42 @@ public class AnimationShellWindow : EditorWindow
 
     private void UpdateAnimatables()
 	{
-        if (_animatables != null)
-        {
-            _animatables.Clear();
-        }
-        _animatables = AnimationShellHelper.GetObjectsWithAnimator();
-        _animatableNames = AnimationShellHelper.GetNames(_animatables);
+        AnimationShellHelper.UpdateAllLists(_animatables, _animatableNames, _clipNamesBackup, _controllersBackup);
         //Debug.Log("Updating \"animatables\" list");
     }
-
-    private bool UpdateClipsAndNames(Animator animatable)
+    
+    private void UpdateClips(Animator animatable)
     {
-        _shouldUpdateClips = false;
-
-        if (UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject) != null)
-        {
-            _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
-            _animatableClipNames = AnimationShellHelper.GetNames(_animatableClips);
-
-            // Only return true if there is actually something in those arrays.
-            if (_animatableClips.Length > 0)
-            {
-                return true;
-            }
-        }
-        return false;
-        //Debug.Log("Updating \"clips\" lists");        
+        UpdateClipsList(animatable);
+        UpdateClipNamesList(animatable);
     }
 
-    private void NullAnimatableClips()
-	{
-		_animatableClips = null;
-		_animatableClipNames = null;
-		_currentClipIndex = 0;
-	}
+    private void UpdateClipNamesList(Animator animatable)
+    {
+        var key = animatable.GetInstanceID();
+        _clipNamesBackup.TryGetValue(key, out _animatableClipNames);
+        //Debug.Log("Updating \"clips\" lists");        
+    }
+    
+    private void UpdateClipsList(Animator animatable)
+    {
+        _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
+    } 
+    
+    private void ResetToPreviousAnimator(Animator anim)
+    {
+        var key = anim.GetInstanceID();
+        RuntimeAnimatorController originalAnimator;
+                
+        _controllersBackup.TryGetValue(key, out originalAnimator);
+
+        anim.runtimeAnimatorController = originalAnimator;
+    }
 
     private void OnHierarchyChange()
     {
         UpdateAnimatables();
         _currentAnimatablesIndex = 0;
-        _currentClipIndex = 0;
+        _currentClipIndex = 0;                
     }
 }
