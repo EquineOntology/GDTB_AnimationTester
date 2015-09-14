@@ -98,7 +98,7 @@ public class AnimationShellWindow : EditorWindow
         // If the selected animatable changes, update the list of animations.
         if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < _animatables.Count)
         {
-            ResetToPreviousAnimator(_animatables[tempIndex]);
+            RevertToPreviousAnimator(_animatables[tempIndex]);
             _shouldUpdateClips = true;      
         }
         
@@ -162,7 +162,18 @@ public class AnimationShellWindow : EditorWindow
 
     private void UpdateAnimatables()
 	{
-        AnimationShellHelper.UpdateAllLists(_animatables, _animatableNames, _clipNamesBackup, _controllersBackup);
+        if(_animatables[_currentAnimatablesIndex] != null)
+        {
+            RevertToPreviousAnimator(_animatables[_currentAnimatablesIndex]);
+        }
+        _animatables.Clear();
+        _animatables = AnimationShellHelper.GetObjectsWithAnimator();
+        _animatableNames = null;
+        _animatableNames = AnimationShellHelper.GetNames(_animatables);
+        _clipNamesBackup.Clear();
+        _clipNamesBackup = AnimationShellHelper.BuildClipNamesBackup(_animatables);
+        _controllersBackup.Clear();
+        _controllersBackup = AnimationShellHelper.BuildControllersBackup(_animatables);
         //Debug.Log("Updating \"animatables\" list");
     }
     
@@ -184,7 +195,7 @@ public class AnimationShellWindow : EditorWindow
         _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
     } 
     
-    private void ResetToPreviousAnimator(Animator anim)
+    private void RevertToPreviousAnimator(Animator anim)
     {
         var key = anim.GetInstanceID();
         RuntimeAnimatorController originalAnimator;
