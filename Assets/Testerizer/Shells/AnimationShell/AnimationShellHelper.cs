@@ -106,15 +106,6 @@ public static class AnimationShellHelper
         return backup;
     }
 
-    public static void UpdateAllLists(List<Animator> animatables, string[] animatableNames, Dictionary<int, string[]> clipNamesBackup, Dictionary<int,RuntimeAnimatorController> controllersBackup)
-    {
-        animatables.Clear();
-        animatables = GetObjectsWithAnimator();        
-        animatableNames = GetNames(animatables);        
-        clipNamesBackup = BuildClipNamesBackup(animatables);
-        controllersBackup = BuildControllersBackup(animatables);
-    }
-
     /* public static AnimationClip GetClipByName(string name, Animator animator)
      {
          var clips = UnityEditor.AnimationUtility.GetAnimationClips(animator.gameObject);
