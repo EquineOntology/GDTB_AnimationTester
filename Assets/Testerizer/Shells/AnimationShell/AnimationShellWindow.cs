@@ -13,6 +13,7 @@ public class AnimationShellWindow : EditorWindow
     // ControllersBackup: a backup of all original animator controllers.
     // Used to reassign the original controller to an animator.
     private Dictionary<int, RuntimeAnimatorController> _controllersBackup = new Dictionary<int, RuntimeAnimatorController>();
+    private bool _controllerBackupBuilt = false;
 
     // AnimatableClips: Animation Clips of an animatable.
     private AnimationClip[] _animatableClips;
@@ -65,6 +66,7 @@ public class AnimationShellWindow : EditorWindow
             // Build the backups.
             _clipNamesBackup = AnimationShellHelper.BuildClipNamesBackup(_animatables);
             _controllersBackup = AnimationShellHelper.BuildControllersBackup(_animatables);
+            _controllerBackupBuilt = true;
 
             //Debug.Log("Collected animatables!");
         } 
@@ -200,9 +202,12 @@ public class AnimationShellWindow : EditorWindow
         var key = anim.GetInstanceID();
         RuntimeAnimatorController originalAnimator;
                 
-        _controllersBackup.TryGetValue(key, out originalAnimator);
+        var gottenValue = _controllersBackup.TryGetValue(key, out originalAnimator);
 
-        anim.runtimeAnimatorController = originalAnimator;
+        if (gottenValue == true)
+        {
+            anim.runtimeAnimatorController = originalAnimator;
+        }
     }
 
     private void OnHierarchyChange()
