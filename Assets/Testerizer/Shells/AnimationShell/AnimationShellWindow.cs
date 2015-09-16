@@ -26,6 +26,9 @@ public class AnimationShellWindow : EditorWindow
     // the controller that will be examined is the test one, which only has a single clip in it.
     private Dictionary<int,string[]> _clipNamesBackup = new  Dictionary<int,string[]>();
 
+    // Custom Skin
+    private static GUISkin _customSkin = null;
+
     // CONSTANTS
     private const string ANIMATABLES_LIST = "Select gameobject: ";
 	private const string ANIMATABLE_CLIPS_LIST = "Select clip: ";
@@ -74,7 +77,8 @@ public class AnimationShellWindow : EditorWindow
 	
 	private void OnGUI ()
 	{
-		EditorGUILayout.BeginVertical();
+        CustomEditorSkin();
+        EditorGUILayout.BeginVertical();
 		GUILayout.Space(15);
 		DrawListOfAnimatables();
 		GUILayout.Space(15);
@@ -208,6 +212,16 @@ public class AnimationShellWindow : EditorWindow
         {
             anim.runtimeAnimatorController = originalAnimator;
         }
+    }
+
+    private void CustomEditorSkin()
+    {
+        if(_customSkin == null)
+        {
+            _customSkin = (GUISkin)AssetDatabase.LoadAssetAtPath("Assets/Testerizer/GUI/TesterizerSkin.guiskin", typeof(GUISkin));
+        }
+
+        GUI.skin = _customSkin;
     }
 
     private void OnHierarchyChange()
