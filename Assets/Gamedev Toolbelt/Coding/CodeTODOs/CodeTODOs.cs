@@ -21,9 +21,11 @@ public class CodeTODOs : EditorWindow
     private const int BOX_WIDTH = 400;
     private const string LIST_QQQS = "Refresh list";
 
+    private const string PREFS_QQQTEMPLATE = "GDTB_CodingTODOs_QQQTemplate";
+
     [MenuItem("Gamedev toolbelt/CodeTODOs")]
     public static void Init()
-    {       
+    {
         // Get existing open window or if none, make a new one.
         CodeTODOs window = (CodeTODOs)EditorWindow.GetWindow(typeof(CodeTODOs));
         window.Show();
@@ -31,6 +33,7 @@ public class CodeTODOs : EditorWindow
 
     public void OnEnable()
     {
+        CheckPrefs();
         _qqqs = CodeTODOsHelper.CheckAllScriptsForQQQs(out _qqqTasks, out _qqqScripts);
         /*_reorderableQQQs = new ReorderableList(_qqqs, typeof(QQQ), true, true, true, true);
 
@@ -94,5 +97,17 @@ public class CodeTODOs : EditorWindow
         }
         EditorGUILayout.Space();
         EditorGUILayout.EndHorizontal();
-    }    
+    }
+    
+    private void CheckPrefs()
+    {
+        if(!EditorPrefs.HasKey(PREFS_QQQTEMPLATE))
+        {
+            EditorPrefs.SetString(PREFS_QQQTEMPLATE, "QQQ");
+        }
+        else
+        {
+            QQQTemplate = EditorPrefs.GetString(PREFS_QQQTEMPLATE, "QQQ");
+        }
+    }
 }
