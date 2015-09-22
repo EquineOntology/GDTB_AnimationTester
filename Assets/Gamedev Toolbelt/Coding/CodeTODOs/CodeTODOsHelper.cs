@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.IO;
 
-public static class CodingShellHelper
+public static class CodeTODOsHelper
 {
     public static List<string> FindAllScripts()
     {        
@@ -37,7 +37,7 @@ public static class CodingShellHelper
                 // Since the string "QQQ" is repeated many times in these three files listed, its default value would give
                 // a bunch of false positives in these files. So either the token doesn't use the default value,
                 // or we exclude these three files from the collection.
-                if (CodingShell.QQQTemplate != "QQQ" || (!script.EndsWith("CodingShell.cs") && !script.EndsWith("CodingShellHelper.cs") && !script.EndsWith("QQQ.cs")))
+                if (CodeTODOs.QQQTemplate != "QQQ" || (!script.EndsWith("CodeTODOs.cs") && !script.EndsWith("CodeTODOsHelper.cs") && !script.EndsWith("QQQ.cs")))
                 {
                     scripts.Add(script);
                     qqqTasks.Add(QQQsInScript[i]);
@@ -63,11 +63,11 @@ public static class CodingShellHelper
         for (int i = 0; i < lines.Length; i++)
         {
             completeQQQ = "";
-            if (lines[i].Contains(CodingShell.QQQTemplate))
+            if (lines[i].Contains(CodeTODOs.QQQTemplate))
             {
-                var index = lines[i].IndexOf(CodingShell.QQQTemplate);
+                var index = lines[i].IndexOf(CodeTODOs.QQQTemplate);
                 var tempString = lines[i].Substring(index);
-                tempString = tempString.Substring(CodingShell.QQQTemplate.Length);
+                tempString = tempString.Substring(CodeTODOs.QQQTemplate.Length);
                 tempString.Trim();
                 completeQQQ += tempString;
                 
