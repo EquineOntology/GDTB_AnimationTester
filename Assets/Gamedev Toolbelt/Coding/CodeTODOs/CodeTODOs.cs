@@ -21,6 +21,7 @@ public class CodeTODOs : EditorWindow
     private const int BOX_WIDTH = 400;
     private const string LIST_QQQS = "Refresh list";
 
+    private const string PREFS_CODINGTODOS = "GDTB_CodingTODOs_Enable";
     private const string PREFS_QQQTEMPLATE = "GDTB_CodingTODOs_QQQTemplate";
 
     [MenuItem("Gamedev toolbelt/CodeTODOs")]
@@ -101,6 +102,11 @@ public class CodeTODOs : EditorWindow
     
     private void CheckPrefs()
     {
+        if(!EditorPrefs.HasKey(PREFS_CODINGTODOS))
+        {
+            EditorPrefs.SetBool(PREFS_CODINGTODOS, true);
+        }
+        
         if(!EditorPrefs.HasKey(PREFS_QQQTEMPLATE))
         {
             EditorPrefs.SetString(PREFS_QQQTEMPLATE, "QQQ");

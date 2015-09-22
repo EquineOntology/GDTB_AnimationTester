@@ -46,7 +46,7 @@ public static class CodeTODOsHelper
         }
 
         var qqqs = new List<QQQ>();
-        for(int j = 0; j <scripts.Count; j++)
+        for (int j = 0; j < scripts.Count; j++)
         {
             qqqs.Add(new QQQ(qqqTasks[j], scripts[j]));
         }
