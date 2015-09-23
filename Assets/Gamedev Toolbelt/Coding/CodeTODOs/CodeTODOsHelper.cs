@@ -66,11 +66,11 @@ public static class CodeTODOsHelper
         for (int i = 0; i < lines.Length; i++)
         {
             completeQQQ = "";
-            if (lines[i].Contains(CodeTODOs.QQQTemplate))
+            if (lines[i].Contains(CodeTODOs.TODOToken))
             {
-                var index = lines[i].IndexOf(CodeTODOs.QQQTemplate);
+                var index = lines[i].IndexOf(CodeTODOs.TODOToken);
                 var tempString = lines[i].Substring(index);
-                tempString = tempString.Substring(CodeTODOs.QQQTemplate.Length);
+                tempString = tempString.Substring(CodeTODOs.TODOToken.Length);
                 tempString.Trim();
                 completeQQQ += tempString;
                 
