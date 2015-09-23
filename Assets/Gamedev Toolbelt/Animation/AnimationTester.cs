@@ -2,7 +2,7 @@
 using UnityEditor;
 using System.Collections.Generic;
 
-public class AnimationShellWindow : EditorWindow 
+public class AnimationTester : EditorWindow 
 {	
 	// Animatables: gameobjects with Animator component.
 	private List<Animator> _animatables;
@@ -45,11 +45,11 @@ public class AnimationShellWindow : EditorWindow
     private const string ERROR_MUST_BE_IN_PLAY_MODE = "To play animations you need to be in Play mode.";
  
 
-    [MenuItem ("Testerizer/Load Animation Shell")]
+    [MenuItem ("Gamedev Toolbelt/Animation Tester")]
 	static void Init ()
 	{		
 		// Get existing open window or, if none exists, make a new one.
-		var window = (AnimationShellWindow)EditorWindow.GetWindow (typeof (AnimationShellWindow));
+		var window = (AnimationTester)EditorWindow.GetWindow (typeof (AnimationTester));
         window.minSize = new Vector2(EDITOR_WINDOW_MINSIZE_X, EDITOR_WINDOW_MINSIZE_Y);
         window.Show();
 	}
@@ -59,13 +59,13 @@ public class AnimationShellWindow : EditorWindow
 		// Populate list of gameobjects with animator, but only once.
 		if(_collectedAnimatables == false)
 		{
-			_animatables = AnimationShellHelper.GetObjectsWithAnimator();
+			_animatables = AnimationTesterHelper.GetObjectsWithAnimator();
 			_collectedAnimatables = true;
-			_animatableNames = AnimationShellHelper.GetNames(_animatables);
+			_animatableNames = AnimationTesterHelper.GetNames(_animatables);
             
             // Build the backups.
-            _clipNamesBackup = AnimationShellHelper.BuildClipNamesBackup(_animatables);
-            _controllersBackup = AnimationShellHelper.BuildControllersBackup(_animatables);
+            _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
+            _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
             _controllerBackupBuilt = true;
 
             //Debug.Log("Collected animatables!");
@@ -155,7 +155,7 @@ public class AnimationShellWindow : EditorWindow
             }
             else
             {
-                AnimationShellHelper.PlayAnimation(_animatables[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
+                AnimationTesterHelper.PlayAnimation(_animatables[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
             }
         }
         EditorGUILayout.Space();
@@ -169,13 +169,13 @@ public class AnimationShellWindow : EditorWindow
             RevertToPreviousAnimator(_animatables[_currentAnimatablesIndex]);
         }
         _animatables.Clear();
-        _animatables = AnimationShellHelper.GetObjectsWithAnimator();
+        _animatables = AnimationTesterHelper.GetObjectsWithAnimator();
         _animatableNames = null;
-        _animatableNames = AnimationShellHelper.GetNames(_animatables);
+        _animatableNames = AnimationTesterHelper.GetNames(_animatables);
         _clipNamesBackup.Clear();
-        _clipNamesBackup = AnimationShellHelper.BuildClipNamesBackup(_animatables);
+        _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
         _controllersBackup.Clear();
-        _controllersBackup = AnimationShellHelper.BuildControllersBackup(_animatables);
+        _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
         //Debug.Log("Updating \"animatables\" list");
     }
     
