@@ -2,7 +2,7 @@
 using UnityEditor.Animations;
 using System.Collections.Generic;
 
-public static class AnimationShellHelper
+public static class AnimationTesterHelper
 {
 
     public static void PlayAnimation(Animator animator, AnimationClip clip)
