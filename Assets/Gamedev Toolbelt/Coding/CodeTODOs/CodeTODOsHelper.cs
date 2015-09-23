@@ -37,7 +37,10 @@ public static class CodeTODOsHelper
                 // Since the string "QQQ" is repeated many times in these three files listed, its default value would give
                 // a bunch of false positives in these files. So either the token doesn't use the default value,
                 // or we exclude these three files from the collection.
-                if (CodeTODOs.QQQTemplate != "QQQ" || (!script.EndsWith("CodeTODOs.cs") && !script.EndsWith("CodeTODOsHelper.cs") && !script.EndsWith("QQQ.cs")))
+                if (!script.EndsWith("CodeTODOs.cs") && 
+                    !script.EndsWith("CodeTODOsHelper.cs") && 
+                    !script.EndsWith("QQQ.cs") &&
+                    !script.EndsWith("GamedevToolbelt.cs"))
                 {
                     scripts.Add(script);
                     qqqTasks.Add(QQQsInScript[i]);
