@@ -57,7 +57,7 @@ public class CodeTODOs : EditorWindow
         DrawQQQList();
         EditorGUILayout.Space();
         DrawListButton();
-        EditorGUILayout.BeginVertical();
+        EditorGUILayout.EndVertical();
     }
     
     private void DrawQQQList()
