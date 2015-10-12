@@ -42,7 +42,7 @@ public class AnimationTester : EditorWindow
     
 	private const string ERROR_NO_ANIMATABLES = "There are no gameobjects with an Animator component in the scene.";
     private const string ERROR_ANIMATABLE_NOT_FOUND = "The selected gameobject was not found.\nDid you remove the object while the window was open? If so, please click on \"Refresh list\" and try again.";
-    private const string ERROR_MUST_BE_IN_PLAY_MODE = "To play animations you need to be in Play mode.";
+    private const string ERROR_MUST_BE_IN_PLAY_MODE = "To play an animation you must be in Play mode.";
  
 
     [MenuItem ("Gamedev Toolbelt/Animation Tester")]
@@ -151,7 +151,8 @@ public class AnimationTester : EditorWindow
         {
             if (!Application.isPlaying)
             {
-                Debug.LogWarning(ERROR_MUST_BE_IN_PLAY_MODE);
+                var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
+                sceneWindow.ShowNotification(new GUIContent(ERROR_MUST_BE_IN_PLAY_MODE));
             }
             else
             {
