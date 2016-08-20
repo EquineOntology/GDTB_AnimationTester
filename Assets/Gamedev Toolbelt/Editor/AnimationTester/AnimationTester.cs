@@ -20,7 +20,6 @@ namespace com.immortalhydra.gdtb.animationtester
         // ControllersBackup: a backup of all original animator controllers.
         // Used to reassign the original controller to an animator.
         private Dictionary<int, RuntimeAnimatorController> _controllersBackup = new Dictionary<int, RuntimeAnimatorController>();
-        private bool _controllerBackupBuilt = false;
 
         // AnimatableClips: Animation Clips of an animatable.
         private AnimationClip[] _animatableClips;
@@ -44,9 +43,6 @@ namespace com.immortalhydra.gdtb.animationtester
         private const int POPUP_WIDTH = 150;
         private const int BUTTON_WIDTH = 100;
 
-        private const int EDITOR_WINDOW_MINSIZE_X = 300;
-        private const int EDITOR_WINDOW_MINSIZE_Y = 160;
-
         private const string ERROR_NO_ANIMATABLES = "There are no gameobjects with an Animator component in the scene.";
         private const string ERROR_ANIMATABLE_NOT_FOUND = "The selected gameobject was not found.\nDid you remove the object while the window was open? If so, please click on \"Refresh list\" and try again.";
         private const string ERROR_MUST_BE_IN_PLAY_MODE = "To play an animation you must be in Play mode.";
@@ -57,7 +53,7 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             // Get existing open window or, if none exists, make a new one.
             var window = (AnimationTester)EditorWindow.GetWindow (typeof (AnimationTester));
-            window.minSize = new Vector2(EDITOR_WINDOW_MINSIZE_X, EDITOR_WINDOW_MINSIZE_Y);
+            window.SetMinSize();
             window.Show();
         }
 
@@ -89,11 +85,20 @@ namespace com.immortalhydra.gdtb.animationtester
                 // Build the backups.
                 _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
                 _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
-                _controllerBackupBuilt = true;
 
                 //Debug.Log("Collected animatables!");
             }
         }
+
+
+        private void OnHierarchyChange()
+        {
+            UpdateAnimatables();
+            _currentAnimatablesIndex = 0;
+            _currentClipIndex = 0;
+        }
+
+
 
         private void OnGUI ()
         {
@@ -234,13 +239,6 @@ namespace com.immortalhydra.gdtb.animationtester
             }
         }
 
-        private void OnHierarchyChange()
-        {
-            UpdateAnimatables();
-            _currentAnimatablesIndex = 0;
-            _currentClipIndex = 0;
-        }
-
 
         /// Set the minSize of the window based on preferences.
         public void SetMinSize()
@@ -255,7 +253,6 @@ namespace com.immortalhydra.gdtb.animationtester
                 window.minSize = new Vector2(322f, 150f);
             }
         }
-
 
 
         /// Load CodeTODOs custom skin.
