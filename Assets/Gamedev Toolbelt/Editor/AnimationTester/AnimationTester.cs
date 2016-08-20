@@ -33,19 +33,7 @@ namespace com.immortalhydra.gdtb.animationtester
         private Dictionary<int,string[]> _clipNamesBackup = new  Dictionary<int,string[]>();
 
         // CONSTANTS
-        private const string ANIMATABLES_LIST = "Select gameobject: ";
-        private const string ANIMATABLE_CLIPS_LIST = "Select clip: ";
-        private const string UPDATE_ANIMATABLES_LIST = "Refresh list";
-        private const string UPDATE_CLIP_NAMES_LIST = "Refresh list";
-        private const string PLAYBUTTON_TEXT = "Play";
 
-        private const int LABEL_WIDTH = 150;
-        private const int POPUP_WIDTH = 150;
-        private const int BUTTON_WIDTH = 100;
-
-        private const string ERROR_NO_ANIMATABLES = "There are no gameobjects with an Animator component in the scene.";
-        private const string ERROR_ANIMATABLE_NOT_FOUND = "The selected gameobject was not found.\nDid you remove the object while the window was open? If so, please click on \"Refresh list\" and try again.";
-        private const string ERROR_MUST_BE_IN_PLAY_MODE = "To play an animation you must be in Play mode.";
 
 
         [MenuItem ("Gamedev Toolbelt/Animation Tester")]
@@ -118,12 +106,12 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             //Debug.Log("Drawing list of animations");
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField(ANIMATABLES_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
+            EditorGUILayout.LabelField(Constants.ANIMATABLES_LIST, EditorStyles.boldLabel, GUILayout.Width(Constants.LABEL_WIDTH));
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(10);
             var tempIndex = _currentAnimatablesIndex;
-            _currentAnimatablesIndex = EditorGUILayout.Popup(_currentAnimatablesIndex, _animatableNames, GUILayout.Width(POPUP_WIDTH));
+            _currentAnimatablesIndex = EditorGUILayout.Popup(_currentAnimatablesIndex, _animatableNames, GUILayout.Width(Constants.POPUP_WIDTH));
 
             // If the selected animatable changes, update the list of animations.
             if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < _animatables.Count)
@@ -133,7 +121,7 @@ namespace com.immortalhydra.gdtb.animationtester
             }
 
             GUILayout.Space(5);
-            if(GUILayout.Button(UPDATE_ANIMATABLES_LIST, GUILayout.Width(BUTTON_WIDTH)))
+            if(GUILayout.Button(Constants.UPDATE_ANIMATABLES_LIST, GUILayout.Width(Constants.BUTTON_WIDTH)))
             {
                 UpdateAnimatables();
             }
@@ -152,13 +140,13 @@ namespace com.immortalhydra.gdtb.animationtester
                 _shouldUpdateClips = false;
             }
             EditorGUILayout.BeginVertical();
-            EditorGUILayout.LabelField(ANIMATABLE_CLIPS_LIST, EditorStyles.boldLabel, GUILayout.Width(LABEL_WIDTH));
+            EditorGUILayout.LabelField(Constants.ANIMATABLE_CLIPS_LIST, EditorStyles.boldLabel, GUILayout.Width(Constants.LABEL_WIDTH));
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.Space(10);
-            _currentClipIndex = EditorGUILayout.Popup(_currentClipIndex, _animatableClipNames, GUILayout.Width(POPUP_WIDTH));
+            _currentClipIndex = EditorGUILayout.Popup(_currentClipIndex, _animatableClipNames, GUILayout.Width(Constants.POPUP_WIDTH));
             GUILayout.Space(5);
-            if (GUILayout.Button(UPDATE_CLIP_NAMES_LIST, GUILayout.Width(BUTTON_WIDTH)))
+            if (GUILayout.Button(Constants.UPDATE_CLIP_NAMES_LIST, GUILayout.Width(Constants.BUTTON_WIDTH)))
             {
 
                 UpdateClips(animatable);
@@ -175,12 +163,12 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
-            if(GUILayout.Button(PLAYBUTTON_TEXT, GUILayout.Width(BUTTON_WIDTH/2)))
+            if(GUILayout.Button(Constants.PLAYBUTTON_TEXT, GUILayout.Width(Constants.BUTTON_WIDTH/2)))
             {
                 if (!Application.isPlaying)
                 {
                     var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
-                    sceneWindow.ShowNotification(new GUIContent(ERROR_MUST_BE_IN_PLAY_MODE));
+                    sceneWindow.ShowNotification(new GUIContent(Constants.ERROR_MUST_BE_IN_PLAY_MODE));
                 }
                 else
                 {
