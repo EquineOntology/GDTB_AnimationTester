@@ -6,6 +6,11 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public class AnimationTester : EditorWindow
     {
+        public static AnimationTester Instance { get; private set; }
+        public static bool IsOpen {
+            get { return Instance != null; }
+        }
+
         // Animatables: gameobjects with Animator component.
         private List<Animator> _animatables;
         private bool _collectedAnimatables = false;
@@ -58,6 +63,22 @@ namespace com.immortalhydra.gdtb.animationtester
 
         private void OnEnable()
         {
+            #if UNITY_5_3_OR_NEWER || UNITY_5_1 || UNITY_5_2
+                titleContent = new GUIContent("AnimationTester");
+            #else
+                title = "AnimationTester";
+            #endif
+
+            Instance = this;
+
+            /* Load current preferences (like colours, etc.).
+             * We do this here so that most preferences are updated as soon as they're changed.
+             */
+            Preferences.GetAllPrefValues();
+
+            LoadSkin();
+            LoadStyles();
+
             // Populate list of gameobjects with animator, but only once.
             if(_collectedAnimatables == false)
             {
@@ -218,6 +239,68 @@ namespace com.immortalhydra.gdtb.animationtester
             UpdateAnimatables();
             _currentAnimatablesIndex = 0;
             _currentClipIndex = 0;
+        }
+
+
+        /// Set the minSize of the window based on preferences.
+        public void SetMinSize()
+        {
+            var window = GetWindow(typeof(AnimationTester)) as AnimationTester;
+            if (Preferences.ButtonsDisplay == ButtonsDisplayFormat.COOL_ICONS)
+            {
+                window.minSize = new Vector2(222f, 150f);
+            }
+            else
+            {
+                window.minSize = new Vector2(322f, 150f);
+            }
+        }
+
+
+
+        /// Load CodeTODOs custom skin.
+        public void LoadSkin()
+        {
+            /*
+            _skin = Resources.Load(Constants.FILE_GUISKIN, typeof(GUISkin)) as GUISkin;
+            */
+        }
+
+
+        /// Load custom styles and apply colors from preferences.
+        public void LoadStyles()
+        {
+            /*
+            _style_script = _skin.GetStyle("GDTB_CodeTODOs_script");
+            _style_script.active.textColor = Preferences.Color_Tertiary;
+            _style_script.normal.textColor = Preferences.Color_Tertiary;
+            _style_task = _skin.GetStyle("GDTB_CodeTODOs_task");
+            _style_task.active.textColor = Preferences.Color_Secondary;
+            _style_task.normal.textColor = Preferences.Color_Secondary;
+            _style_buttonText = _skin.GetStyle("GDTB_CodeTODOs_buttonText");
+            _style_buttonText.active.textColor = Preferences.Color_Tertiary;
+            _style_buttonText.normal.textColor = Preferences.Color_Tertiary;
+
+            _skin.settings.selectionColor = Preferences.Color_Secondary;
+
+            // Change scrollbar color.
+            var scrollbar = Resources.Load(Constants.TEX_SCROLLBAR, typeof(Texture2D)) as Texture2D;
+            #if UNITY_5 || UNITY_5_3_OR_NEWER
+                scrollbar.SetPixel(0,0, Preferences.Color_Secondary);
+            #else
+                var pixels = scrollbar.GetPixels();
+                // We do it like this because minimum texture size in older versions of Unity is 2x2.
+                for(var i = 0; i < pixels.GetLength(0); i++)
+                {
+                    scrollbar.SetPixel(i, 0, Preferences.Color_Secondary);
+                    scrollbar.SetPixel(i, 1, Preferences.Color_Secondary);
+                }
+            #endif
+
+            scrollbar.Apply();
+            _skin.verticalScrollbarThumb.normal.background = scrollbar;
+            _skin.verticalScrollbarThumb.fixedWidth = 6;
+            */
         }
     }
 }
