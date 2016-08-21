@@ -43,7 +43,7 @@ namespace com.immortalhydra.gdtb.animationtester
         private GUISkin _skin;
         private GUIStyle _style_buttonText, _style_boldLabel;
 
-        [MenuItem("Window/Gamedev Toolbelt/AnimationTester %q")]
+        [MenuItem("Window/Gamedev Toolbelt/AnimationTester %t")]
         static void Init()
         {
             // Get existing open window or, if none exists, make a new one.
@@ -145,7 +145,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        // Draws the popup with the list of gameobjects with animatables
+        // Draws the popup with the list of gameobjects with animatables, and the select button.
         private void DrawListOfAnimatables()
         {
             var labelRect = new Rect(_offset, _offset, _popupWidth, _buttonHeight);
@@ -224,6 +224,7 @@ namespace com.immortalhydra.gdtb.animationtester
                     break;
             }
 
+            // Refresh list from the animation controller, but only if in play mode (otherwise throws exception).
             if (GUI.Button(refreshRect, refreshContent))
             {
                 if (!Application.isPlaying)
@@ -251,6 +252,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Draw the "Play" button.
         private void DrawPlay()
         {
             Rect playRect;
@@ -297,6 +299,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Draw the "Settings" button.
         private void DrawSettings()
         {
             Rect settingsRect;
@@ -336,7 +339,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-
+        /// Update the list of animatables.
         private void UpdateAnimatables()
         {
             if(_animatables[_currentAnimatablesIndex] != null)
@@ -355,6 +358,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Update the clips from an animatable
         private void UpdateClips(Animator animatable)
         {
             UpdateClipsList(animatable);
@@ -362,6 +366,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Update the list of clip names from an animatable.
         private void UpdateClipNamesList(Animator animatable)
         {
             var key = animatable.GetInstanceID();
@@ -370,12 +375,14 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Update the list of animationClips from an animatable.
         private void UpdateClipsList(Animator animatable)
         {
             _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
         }
 
 
+        /// Switch to the original animator.
         private void RevertToPreviousAnimator(Animator anim)
         {
             var key = anim.GetInstanceID();

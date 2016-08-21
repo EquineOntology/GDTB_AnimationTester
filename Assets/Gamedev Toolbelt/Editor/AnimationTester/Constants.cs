@@ -24,7 +24,6 @@ namespace com.immortalhydra.gdtb.animationtester
         public const int POPUP_WIDTH = 150;
         public const int BUTTON_WIDTH = 100;
 
-        public const string ERROR_NO_ANIMATABLES = "There are no gameobjects with an Animator component in the scene.";
         public const string ERROR_ANIMATABLE_NOT_FOUND = "The selected gameobject was not found.\nDid you remove the object while the window was open? If so, please click on \"Refresh list\" and try again.";
     }
 }
