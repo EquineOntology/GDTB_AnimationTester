@@ -5,9 +5,9 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public static class DrawingUtils
     {
-        public static Texture2D Texture_Add = Resources.Load(Constants.TEX_ADD_DARK, typeof(Texture2D)) as Texture2D;
-        public static Texture2D Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_DARK, typeof(Texture2D)) as Texture2D;
         public static Texture2D Texture_Complete = Resources.Load(Constants.TEX_COMPLETE_DARK, typeof(Texture2D)) as Texture2D;
+        public static Texture2D Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_DARK, typeof(Texture2D)) as Texture2D;
+        public static Texture2D Texture_Play = Resources.Load(Constants.TEX_PLAY_DARK, typeof(Texture2D)) as Texture2D;
 
         public static IconStyle CurrentIconStyle = IconStyle.LIGHT;
 
@@ -82,22 +82,22 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Change button textures when they're changed in preferences.
         public static void LoadTextures(IconStyle aStyle)
         {
-            Texture_Add = null;
-            Texture_Settings = null;
             Texture_Complete = null;
+            Texture_Settings = null;
+            Texture_Play = null;
 
             if (aStyle == IconStyle.DARK)
             {
-                Texture_Add = Resources.Load(Constants.TEX_ADD_DARK, typeof(Texture2D)) as Texture2D;
-                Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_DARK, typeof(Texture2D)) as Texture2D;
                 Texture_Complete = Resources.Load(Constants.TEX_COMPLETE_DARK, typeof(Texture2D)) as Texture2D;
+                Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_DARK, typeof(Texture2D)) as Texture2D;
+                Texture_Play = Resources.Load(Constants.TEX_PLAY_DARK, typeof(Texture2D)) as Texture2D;
                 CurrentIconStyle = IconStyle.DARK;
             }
             else
             {
-                Texture_Add = Resources.Load(Constants.TEX_ADD_LIGHT, typeof(Texture2D)) as Texture2D;
-                Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_LIGHT, typeof(Texture2D)) as Texture2D;
                 Texture_Complete = Resources.Load(Constants.TEX_COMPLETE_LIGHT, typeof(Texture2D)) as Texture2D;
+                Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_LIGHT, typeof(Texture2D)) as Texture2D;
+                Texture_Play = Resources.Load(Constants.TEX_PLAY_LIGHT, typeof(Texture2D)) as Texture2D;
                 CurrentIconStyle = IconStyle.LIGHT;
             }
         }
