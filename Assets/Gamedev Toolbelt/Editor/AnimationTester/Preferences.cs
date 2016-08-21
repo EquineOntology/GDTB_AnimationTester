@@ -42,10 +42,10 @@ namespace com.immortalhydra.gdtb.animationtester
 
         // Primary color.
         private const string PREFS_ANIMATIONTESTER_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
-        private static Color _primary = new Color(56, 56, 56, 1);
-        private static Color _primary_dark = new Color(56, 56, 56, 1);
-        private static Color _primary_light = new Color(255, 255, 255, 1);
-        private static Color _primary_default = new Color(56, 56, 56, 1);
+        private static Color _primary = new Color(170, 255, 255, 1);
+        private static Color _primary_dark = new Color(170, 255, 255, 1);
+        private static Color _primary_light = new Color(115, 197, 255, 1);
+        private static Color _primary_default = new Color(170, 255, 255, 1);
         public static Color Color_Primary
         {
             get { return _primary; }
@@ -87,9 +87,9 @@ namespace com.immortalhydra.gdtb.animationtester
 
         // Custom shortcut
         private const string PREFS_ANIMATIONTESTER_SHORTCUT = "GDTB_AnimationTester_Shortcut";
-        private static string _shortcut = "%|q";
+        private static string _shortcut = "%|t";
         private static string _newShortcut;
-        private static string _shortcut_default = "%|q";
+        private static string _shortcut_default = "%|t";
         public static string Shortcut
         {
             get { return _shortcut; }
