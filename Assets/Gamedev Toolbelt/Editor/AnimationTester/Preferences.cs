@@ -7,7 +7,7 @@ namespace com.immortalhydra.gdtb.animationtester
     {
         #region fields
         // TODO token (QQQ).
-        private const string PREFS_CODETODOS_TOKEN = "GDTB_AnimationTester_Token";
+        private const string PREFS_ANIMATIONTESTER_TOKEN = "GDTB_AnimationTester_Token";
         private static string _todoToken = "TTT";
         private static string _todoToken_default = "TTT";
         public static string TODOToken
@@ -17,7 +17,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
 
         // Buttons displayed as normal buttons or smaller icons.
-        private const string PREFS_CODETODOS_BUTTONS_DISPLAY = "GDTB_AnimationTester_ButtonDisplay";
+        private const string PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY = "GDTB_AnimationTester_ButtonDisplay";
         private static ButtonsDisplayFormat _buttonsDisplay = ButtonsDisplayFormat.COOL_ICONS;
         private static int _buttonsDisplay_default = 1;
         private static ButtonsDisplayFormat _oldDisplayFormat;
@@ -30,7 +30,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
         #region Colors
         // Style of icons (light or dark).
-        private const string PREFS_CODETODOS_ICON_STYLE = "GDTB_AnimationTester_IconStyle";
+        private const string PREFS_ANIMATIONTESTER_ICON_STYLE = "GDTB_AnimationTester_IconStyle";
         private static IconStyle _iconStyle = IconStyle.LIGHT;
         private static int _iconStyle_default = 1;
         private static IconStyle _oldIconStyle;
@@ -41,7 +41,7 @@ namespace com.immortalhydra.gdtb.animationtester
         private static string[] arr_iconStyle = { "Dark", "Light" };
 
         // Primary color.
-        private const string PREFS_CODETODOS_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
+        private const string PREFS_ANIMATIONTESTER_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
         private static Color _primary = new Color(56, 56, 56, 1);
         private static Color _primary_dark = new Color(56, 56, 56, 1);
         private static Color _primary_light = new Color(255, 255, 255, 1);
@@ -52,7 +52,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
         // Secondary color.
-        private const string PREFS_CODETODOS_COLOR_SECONDARY = "GDTB_AnimationTester_Secondary";
+        private const string PREFS_ANIMATIONTESTER_COLOR_SECONDARY = "GDTB_AnimationTester_Secondary";
         private static Color _secondary = new Color(255, 90, 90, 1);
         private static Color _secondary_dark = new Color(255, 90, 90, 1);
         private static Color _secondary_light = new Color(165, 0, 0, 1);
@@ -63,7 +63,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
         // Tertiary color.
-        private const string PREFS_CODETODOS_COLOR_TERTIARY = "GDTB_AnimationTester_Tertiary";
+        private const string PREFS_ANIMATIONTESTER_COLOR_TERTIARY = "GDTB_AnimationTester_Tertiary";
         private static Color _tertiary = new Color(255, 248, 248, 1);
         private static Color _tertiary_dark = new Color(255, 248, 248, 1);
         private static Color _tertiary_light = new Color(56, 56, 56, 1);
@@ -74,7 +74,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
         // Quaretnary color.
-        private const string PREFS_CODETODOS_COLOR_QUATERNARY = "GDTB_AnimationTester_Quaternary";
+        private const string PREFS_ANIMATIONTESTER_COLOR_QUATERNARY = "GDTB_AnimationTester_Quaternary";
         private static Color _quaternary = new Color(70, 70, 70, 1);
         private static Color _quaternary_dark = new Color(70, 70, 70, 1);
         private static Color _quaternary_light = new Color(242, 242, 242, 1);
@@ -86,7 +86,7 @@ namespace com.immortalhydra.gdtb.animationtester
         #endregion
 
         // Custom shortcut
-        private const string PREFS_CODETODOS_SHORTCUT = "GDTB_AnimationTester_Shortcut";
+        private const string PREFS_ANIMATIONTESTER_SHORTCUT = "GDTB_AnimationTester_Shortcut";
         private static string _shortcut = "%|q";
         private static string _newShortcut;
         private static string _shortcut_default = "%|q";
@@ -157,8 +157,8 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the value of all preferences.
         private static void SetPrefValues()
         {
-            EditorPrefs.SetString(PREFS_CODETODOS_TOKEN, _todoToken);
-            EditorPrefs.SetInt(PREFS_CODETODOS_BUTTONS_DISPLAY, System.Convert.ToInt16(_buttonsDisplay));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_TOKEN, _todoToken);
+            EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, System.Convert.ToInt16(_buttonsDisplay));
             SetIconStyle();
             SetColorPrefs();
             SetShortcutPrefs();
@@ -168,7 +168,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the value of IconStyle.
         private static void SetIconStyle()
         {
-            EditorPrefs.SetInt(PREFS_CODETODOS_ICON_STYLE, (int)_iconStyle);
+            EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_ICON_STYLE, (int)_iconStyle);
             DrawingUtils.LoadTextures(_iconStyle);
         }
 
@@ -176,10 +176,10 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the value of a Color preference.
         private static void SetColorPrefs()
         {
-            EditorPrefs.SetString(PREFS_CODETODOS_COLOR_PRIMARY, RGBA.ColorToString(_primary));
-            EditorPrefs.SetString(PREFS_CODETODOS_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
-            EditorPrefs.SetString(PREFS_CODETODOS_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
-            EditorPrefs.SetString(PREFS_CODETODOS_COLOR_QUATERNARY, RGBA.ColorToString(_quaternary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.ColorToString(_primary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_QUATERNARY, RGBA.ColorToString(_quaternary));
         }
 
 
@@ -244,7 +244,7 @@ namespace com.immortalhydra.gdtb.animationtester
             if (_newShortcut != _shortcut)
             {
                 _shortcut = _newShortcut;
-                EditorPrefs.SetString(PREFS_CODETODOS_SHORTCUT, _shortcut);
+                EditorPrefs.SetString(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut);
                 var formattedShortcut = _shortcut.Replace("|", "");
                 IO.OverwriteShortcut(formattedShortcut);
             }
@@ -254,12 +254,12 @@ namespace com.immortalhydra.gdtb.animationtester
         /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
         public static void GetAllPrefValues()
         {
-            _todoToken = GetPrefValue(PREFS_CODETODOS_TOKEN, _todoToken_default); // TODO token.
-            _buttonsDisplay = (ButtonsDisplayFormat)EditorPrefs.GetInt(PREFS_CODETODOS_BUTTONS_DISPLAY, _buttonsDisplay_default); // Buttons display.
+            _todoToken = GetPrefValue(PREFS_ANIMATIONTESTER_TOKEN, _todoToken_default); // TODO token.
+            _buttonsDisplay = (ButtonsDisplayFormat)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, _buttonsDisplay_default); // Buttons display.
             _oldDisplayFormat = _buttonsDisplay;
             GetIconStyle();
             GetColorPrefs();
-            _shortcut = GetPrefValue(PREFS_CODETODOS_SHORTCUT, _shortcut_default); // Shortcut.
+            _shortcut = GetPrefValue(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut_default); // Shortcut.
             ParseShortcutValues();
         }
 
@@ -267,7 +267,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Get IconStyle.
         private static void GetIconStyle()
         {
-            _iconStyle = (IconStyle)EditorPrefs.GetInt(PREFS_CODETODOS_ICON_STYLE, _iconStyle_default); // Icon style.
+            _iconStyle = (IconStyle)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_ICON_STYLE, _iconStyle_default); // Icon style.
             _oldIconStyle = _iconStyle;
             DrawingUtils.LoadTextures(_iconStyle);
         }
@@ -276,10 +276,10 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Load color preferences.
         private static void GetColorPrefs()
         {
-            _primary = GetPrefValue(PREFS_CODETODOS_COLOR_PRIMARY, _primary_default); // PRIMARY color.
-            _secondary = GetPrefValue(PREFS_CODETODOS_COLOR_SECONDARY, _secondary_default); // SECONDARY color.
-            _tertiary = GetPrefValue(PREFS_CODETODOS_COLOR_TERTIARY, _tertiary_default); // TERTIARY color.
-            _quaternary = GetPrefValue(PREFS_CODETODOS_COLOR_QUATERNARY, _quaternary_default); // QUATERNARY color.
+            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, _primary_default); // PRIMARY color.
+            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, _secondary_default); // SECONDARY color.
+            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, _tertiary_default); // TERTIARY color.
+            _quaternary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_QUATERNARY, _quaternary_default); // QUATERNARY color.
         }
 
 
@@ -446,7 +446,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Repaint all open CodeTODOs windows.
+        /// Repaint all open windows.
         private static void RepaintOpenWindows()
         {
             if (WindowMain.IsOpen)
