@@ -6,16 +6,6 @@ namespace com.immortalhydra.gdtb.animationtester
     public class Preferences
     {
         #region fields
-        // TODO token (QQQ).
-        private const string PREFS_ANIMATIONTESTER_TOKEN = "GDTB_AnimationTester_Token";
-        private static string _todoToken = "TTT";
-        private static string _todoToken_default = "TTT";
-        public static string TODOToken
-        {
-            get { return _todoToken; }
-        }
-
-
         // Buttons displayed as normal buttons or smaller icons.
         private const string PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY = "GDTB_AnimationTester_ButtonDisplay";
         private static ButtonsDisplayFormat _buttonsDisplay = ButtonsDisplayFormat.COOL_ICONS;
@@ -108,9 +98,6 @@ namespace com.immortalhydra.gdtb.animationtester
             GetAllPrefValues();
 
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, false, false);
-            EditorGUILayout.LabelField("General Settings", EditorStyles.boldLabel);
-            _todoToken = EditorGUILayout.TextField("Test token", _todoToken);
-            GUILayout.Space(20);
             EditorGUILayout.LabelField("UI", EditorStyles.boldLabel);
             _buttonsDisplay = (ButtonsDisplayFormat)EditorGUILayout.Popup("Button style", System.Convert.ToInt16(_buttonsDisplay), _buttonsFormatsString);
             _iconStyle = (IconStyle)EditorGUILayout.Popup("Icon style", (int)_iconStyle, arr_iconStyle);
@@ -157,7 +144,6 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the value of all preferences.
         private static void SetPrefValues()
         {
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_TOKEN, _todoToken);
             EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, System.Convert.ToInt16(_buttonsDisplay));
             SetIconStyle();
             SetColorPrefs();
@@ -254,7 +240,6 @@ namespace com.immortalhydra.gdtb.animationtester
         /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
         public static void GetAllPrefValues()
         {
-            _todoToken = GetPrefValue(PREFS_ANIMATIONTESTER_TOKEN, _todoToken_default); // TODO token.
             _buttonsDisplay = (ButtonsDisplayFormat)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, _buttonsDisplay_default); // Buttons display.
             _oldDisplayFormat = _buttonsDisplay;
             GetIconStyle();
@@ -422,7 +407,6 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Reset all preferences to default.
         private static void ResetPrefsToDefault()
         {
-            _todoToken = _todoToken_default;
             _buttonsDisplay = (ButtonsDisplayFormat)_buttonsDisplay_default;
             _primary = new Color(_primary_default.r / 255, _primary_default.g / 255, _primary_default.b / 255, _primary_default.a);
             _secondary = new Color(_secondary_default.r / 255, _secondary_default.g / 255, _secondary_default.b / 255, _secondary_default.a);
