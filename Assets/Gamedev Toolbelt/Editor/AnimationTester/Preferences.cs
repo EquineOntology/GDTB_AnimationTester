@@ -142,10 +142,10 @@ namespace com.immortalhydra.gdtb.animationtester
 
                 if (shouldReopenWindowMain)
                 {
-                    if (AnimationTester.IsOpen)
+                    if (WindowMain.IsOpen)
                     {
-                        EditorWindow.GetWindow(typeof(AnimationTester)).Close();
-                        var window = EditorWindow.GetWindow(typeof(AnimationTester)) as AnimationTester;
+                        EditorWindow.GetWindow(typeof(WindowMain)).Close();
+                        var window = EditorWindow.GetWindow(typeof(WindowMain)) as WindowMain;
                         window.SetMinSize();
                         window.Show();
                     }
@@ -438,9 +438,9 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Reload skins of open windows.
         private static void ReloadSkins()
         {
-            if (AnimationTester.IsOpen)
+            if (WindowMain.IsOpen)
             {
-                var window = EditorWindow.GetWindow(typeof(AnimationTester)) as AnimationTester;
+                var window = EditorWindow.GetWindow(typeof(WindowMain)) as WindowMain;
                 window.LoadStyles();
             }
         }
@@ -449,9 +449,9 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Repaint all open CodeTODOs windows.
         private static void RepaintOpenWindows()
         {
-            if (AnimationTester.IsOpen)
+            if (WindowMain.IsOpen)
             {
-                EditorWindow.GetWindow(typeof(AnimationTester)).Repaint();
+                EditorWindow.GetWindow(typeof(WindowMain)).Repaint();
             }
         }
     }

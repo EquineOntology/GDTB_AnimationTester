@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace com.immortalhydra.gdtb.animationtester
 {
-    public class AnimationTester : EditorWindow
+    public class WindowMain : EditorWindow
     {
-        public static AnimationTester Instance { get; private set; }
+        public static WindowMain Instance { get; private set; }
         public static bool IsOpen {
             get { return Instance != null; }
         }
@@ -32,18 +32,16 @@ namespace com.immortalhydra.gdtb.animationtester
         // the controller that will be examined is the test one, which only has a single clip in it.
         private Dictionary<int,string[]> _clipNamesBackup = new  Dictionary<int,string[]>();
 
-        // CONSTANTS
-
-
 
         [MenuItem ("Gamedev Toolbelt/Animation Tester")]
-        static void Init ()
+        static void Init()
         {
             // Get existing open window or, if none exists, make a new one.
-            var window = (AnimationTester)EditorWindow.GetWindow (typeof (AnimationTester));
+            var window = (WindowMain)EditorWindow.GetWindow (typeof (WindowMain));
             window.SetMinSize();
             window.Show();
         }
+
 
         private void OnEnable()
         {
@@ -87,8 +85,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-
-        private void OnGUI ()
+        private void OnGUI()
         {
             EditorGUILayout.BeginVertical();
             GUILayout.Space(15);
@@ -100,6 +97,7 @@ namespace com.immortalhydra.gdtb.animationtester
             }
             EditorGUILayout.EndVertical();
         }
+
 
         // Draws the popup with the list of gameobjects with animatables
         private void DrawListOfAnimatables()
@@ -131,6 +129,7 @@ namespace com.immortalhydra.gdtb.animationtester
             EditorGUILayout.EndVertical();
         }
 
+
         // Draws the popup with the list of animations.
         private void DrawListOfAnimations(Animator animatable)
         {
@@ -159,6 +158,7 @@ namespace com.immortalhydra.gdtb.animationtester
             EditorGUILayout.EndVertical();
         }
 
+
         private void DrawPlayButton()
         {
             EditorGUILayout.BeginHorizontal();
@@ -179,6 +179,7 @@ namespace com.immortalhydra.gdtb.animationtester
             EditorGUILayout.EndHorizontal();
         }
 
+
         private void UpdateAnimatables()
         {
             if(_animatables[_currentAnimatablesIndex] != null)
@@ -196,11 +197,13 @@ namespace com.immortalhydra.gdtb.animationtester
             //Debug.Log("Updating \"animatables\" list");
         }
 
+
         private void UpdateClips(Animator animatable)
         {
             UpdateClipsList(animatable);
             UpdateClipNamesList(animatable);
         }
+
 
         private void UpdateClipNamesList(Animator animatable)
         {
@@ -209,10 +212,12 @@ namespace com.immortalhydra.gdtb.animationtester
             //Debug.Log("Updating \"clips\" lists");
         }
 
+
         private void UpdateClipsList(Animator animatable)
         {
             _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
         }
+
 
         private void RevertToPreviousAnimator(Animator anim)
         {
@@ -231,7 +236,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the minSize of the window based on preferences.
         public void SetMinSize()
         {
-            var window = GetWindow(typeof(AnimationTester)) as AnimationTester;
+            var window = GetWindow(typeof(WindowMain)) as WindowMain;
             if (Preferences.ButtonsDisplay == ButtonsDisplayFormat.COOL_ICONS)
             {
                 window.minSize = new Vector2(222f, 150f);
