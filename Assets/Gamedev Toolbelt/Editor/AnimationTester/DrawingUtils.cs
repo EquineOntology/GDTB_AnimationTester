@@ -8,6 +8,7 @@ namespace com.immortalhydra.gdtb.animationtester
         public static Texture2D Texture_Complete = Resources.Load(Constants.TEX_COMPLETE_DARK, typeof(Texture2D)) as Texture2D;
         public static Texture2D Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_DARK, typeof(Texture2D)) as Texture2D;
         public static Texture2D Texture_Play = Resources.Load(Constants.TEX_PLAY_DARK, typeof(Texture2D)) as Texture2D;
+        public static Texture2D Texture_Refresh = Resources.Load(Constants.TEX_REFRESH_DARK, typeof(Texture2D)) as Texture2D;
 
         public static IconStyle CurrentIconStyle = IconStyle.LIGHT;
 
@@ -91,6 +92,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 Texture_Complete = Resources.Load(Constants.TEX_COMPLETE_DARK, typeof(Texture2D)) as Texture2D;
                 Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_DARK, typeof(Texture2D)) as Texture2D;
                 Texture_Play = Resources.Load(Constants.TEX_PLAY_DARK, typeof(Texture2D)) as Texture2D;
+                Texture_Refresh = Resources.Load(Constants.TEX_REFRESH_DARK, typeof(Texture2D)) as Texture2D;
                 CurrentIconStyle = IconStyle.DARK;
             }
             else
@@ -98,6 +100,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 Texture_Complete = Resources.Load(Constants.TEX_COMPLETE_LIGHT, typeof(Texture2D)) as Texture2D;
                 Texture_Settings = Resources.Load(Constants.TEX_SETTINGS_LIGHT, typeof(Texture2D)) as Texture2D;
                 Texture_Play = Resources.Load(Constants.TEX_PLAY_LIGHT, typeof(Texture2D)) as Texture2D;
+                Texture_Refresh = Resources.Load(Constants.TEX_REFRESH_LIGHT, typeof(Texture2D)) as Texture2D;
                 CurrentIconStyle = IconStyle.LIGHT;
             }
         }

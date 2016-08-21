@@ -42,10 +42,10 @@ namespace com.immortalhydra.gdtb.animationtester
 
         // Primary color.
         private const string PREFS_ANIMATIONTESTER_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
-        private static Color _primary = new Color(170, 255, 255, 1);
-        private static Color _primary_dark = new Color(170, 255, 255, 1);
-        private static Color _primary_light = new Color(115, 197, 255, 1);
-        private static Color _primary_default = new Color(170, 255, 255, 1);
+        private static Color _primary = new Color(56, 56, 56, 1);
+        private static Color _primary_dark = new Color(56, 56, 56, 1);
+        private static Color _primary_light = new Color(255, 255, 255, 1);
+        private static Color _primary_default = new Color(56, 56, 56, 1);
         public static Color Color_Primary
         {
             get { return _primary; }
@@ -53,10 +53,10 @@ namespace com.immortalhydra.gdtb.animationtester
 
         // Secondary color.
         private const string PREFS_ANIMATIONTESTER_COLOR_SECONDARY = "GDTB_AnimationTester_Secondary";
-        private static Color _secondary = new Color(255, 90, 90, 1);
-        private static Color _secondary_dark = new Color(255, 90, 90, 1);
-        private static Color _secondary_light = new Color(165, 0, 0, 1);
-        private static Color _secondary_default = new Color(255, 90, 90, 1);
+        private static Color _secondary = new Color(0, 162, 219, 1);
+        private static Color _secondary_dark = new Color(0, 162, 219, 1);
+        private static Color _secondary_light = new Color(100, 171, 255, 1);
+        private static Color _secondary_default = new Color(0, 162, 219, 1);
         public static Color Color_Secondary
         {
             get { return _secondary; }
