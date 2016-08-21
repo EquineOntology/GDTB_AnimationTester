@@ -248,7 +248,7 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Load CodeTODOs custom skin.
+        /// Load custom skin.
         public void LoadSkin()
         {
             /*
@@ -261,13 +261,8 @@ namespace com.immortalhydra.gdtb.animationtester
         public void LoadStyles()
         {
             /*
-            _style_script = _skin.GetStyle("GDTB_CodeTODOs_script");
-            _style_script.active.textColor = Preferences.Color_Tertiary;
-            _style_script.normal.textColor = Preferences.Color_Tertiary;
-            _style_task = _skin.GetStyle("GDTB_CodeTODOs_task");
-            _style_task.active.textColor = Preferences.Color_Secondary;
-            _style_task.normal.textColor = Preferences.Color_Secondary;
-            _style_buttonText = _skin.GetStyle("GDTB_CodeTODOs_buttonText");
+
+            _style_buttonText = _skin.GetStyle("GDTB_AnimationTester_buttonText");
             _style_buttonText.active.textColor = Preferences.Color_Tertiary;
             _style_buttonText.normal.textColor = Preferences.Color_Tertiary;
 

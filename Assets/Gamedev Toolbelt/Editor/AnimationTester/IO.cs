@@ -91,7 +91,7 @@ namespace com.immortalhydra.gdtb.animationtester
         public static void OverwriteShortcut(string aShortcut)
         {
             var tempFile = Path.GetTempFileName();
-            var file = GetFilePath("Gamedev Toolbelt/Editor/CodeTODOs/WindowMain.cs");
+            var file = GetFilePath("Gamedev Toolbelt/Editor/AnimationTester/WindowMain.cs");
 
             var writer = new StreamWriter(tempFile, false);
             var reader = new StreamReader(file);
@@ -103,7 +103,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 {
                     if(line.Contains("[MenuItem"))
                     {
-                        writer.WriteLine("        [MenuItem(" + '"' + "Window/Gamedev Toolbelt/CodeTODOs " + aShortcut + '"' + ")]");
+                        writer.WriteLine("        [MenuItem(" + '"' + "Window/Gamedev Toolbelt/AnimationTester " + aShortcut + '"' + ")]");
                     }
                     else
                     {
