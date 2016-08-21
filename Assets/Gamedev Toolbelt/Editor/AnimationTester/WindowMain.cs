@@ -35,8 +35,8 @@ namespace com.immortalhydra.gdtb.animationtester
 
         // Layouting and styling;
         private int _iconSize = Constants.ICON_SIZE;
-        private int _buttonWidth = 70;
-        private int _buttonHeight = 18;
+        private int _buttonWidth = Constants.BUTTON_WIDTH;
+        private int _buttonHeight = Constants.BUTTON_HEIGHT;
         private int _popupWidth = Constants.POPUP_WIDTH;
         private int _offset = 5;
 
@@ -92,6 +92,7 @@ namespace com.immortalhydra.gdtb.animationtester
             UpdateAnimatables();
             _currentAnimatablesIndex = 0;
             _currentClipIndex = 0;
+            Instance.Repaint();
         }
 
 
@@ -99,19 +100,21 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             DrawWindowBackground();
 
-            // If the list is empty, tell the user.
+            // If there are no animatables in the scene, tell the user.
             if (_animatables.Count == 0)
             {
                 DrawNoAnimatablesMessage();
             }
-
-            DrawListOfAnimatables();
-            if (_animatables != null && _currentAnimatablesIndex < _animatables.Count)
+            else
             {
-                DrawListOfAnimations(_animatables[_currentAnimatablesIndex]);
-            }
+                DrawListOfAnimatables();
+                if (_animatables != null && _currentAnimatablesIndex < _animatables.Count)
+                {
+                    DrawListOfAnimations(_animatables[_currentAnimatablesIndex]);
+                }
 
-            DrawPlay();
+                DrawPlay();
+            }
             DrawSettings();
         }
 
@@ -126,7 +129,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// If there are no Animatables, tell the user.
         private void DrawNoAnimatablesMessage()
         {
-            var label = "There are currently no gameobjects with compatible animations in the scene.";
+            var label = "There are currently no gameobjects\nwith compatible animations in the scene.";
             var labelContent = new GUIContent(label);
 
             Vector2 labelSize;
@@ -181,7 +184,7 @@ namespace com.immortalhydra.gdtb.animationtester
             {
                 UpdateAnimatables();
             }
-            DrawingUtils.DrawButton(animatablesRect, Preferences.ButtonsDisplay, DrawingUtils.Texture_Complete, animatablesContent.text, _style_buttonText);
+            DrawingUtils.DrawButton(animatablesRect, DrawingUtils.Texture_Complete, animatablesContent.text, _style_buttonText);
         }
 
         private void Button_Animatables_default(out Rect aRect, out GUIContent aContent)
@@ -237,7 +240,7 @@ namespace com.immortalhydra.gdtb.animationtester
                     UpdateClips(animatable);
                 }
             }
-            DrawingUtils.DrawButton(refreshRect, Preferences.ButtonsDisplay, DrawingUtils.Texture_Refresh, refreshContent.text, _style_buttonText);
+            DrawingUtils.DrawButton(refreshRect, DrawingUtils.Texture_Refresh, refreshContent.text, _style_buttonText);
         }
 
         private void Button_Refresh_default(out Rect aRect, out GUIContent aContent)
@@ -280,7 +283,7 @@ namespace com.immortalhydra.gdtb.animationtester
                     AnimationTesterHelper.PlayAnimation(_animatables[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
                 }
             }
-            DrawingUtils.DrawButton(playRect, Preferences.ButtonsDisplay, DrawingUtils.Texture_Play, playContent.text, _style_buttonText);
+            DrawingUtils.DrawButton(playRect, DrawingUtils.Texture_Play, playContent.text, _style_buttonText);
         }
 
         private void Button_Play_default(out Rect aRect, out GUIContent aContent)
@@ -323,7 +326,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 var method = type.GetMethod("ShowPreferencesWindow", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
                 method.Invoke(null, null);
             }
-            DrawingUtils.DrawButton(settingsRect, Preferences.ButtonsDisplay, DrawingUtils.Texture_Settings, settingsContent.text, _style_buttonText);
+            DrawingUtils.DrawButton(settingsRect, DrawingUtils.Texture_Settings, settingsContent.text, _style_buttonText);
         }
 
         private void Button_Settings_default(out Rect aRect, out GUIContent aContent)
@@ -342,19 +345,24 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Update the list of animatables.
         private void UpdateAnimatables()
         {
-            if(_animatables[_currentAnimatablesIndex] != null)
+            // If the user removes a controller from the scene in the middle of a draw call, the index in the for loop stays the same but _animatables.Count diminishes.
+            // Since this is pretty much inevitable, and will correct itself next frame, what we do is swallow the exception and wait for the next draw call.
+            try
             {
-                RevertToPreviousAnimator(_animatables[_currentAnimatablesIndex]);
+                if(_animatables.Count != 0 && _currentAnimatablesIndex < _animatables.Count && _animatables[_currentAnimatablesIndex] != null)
+                {
+                    RevertToPreviousAnimator(_animatables[_currentAnimatablesIndex]);
+                }
+                _animatables.Clear();
+                _animatables = AnimationTesterHelper.GetObjectsWithAnimator();
+                _animatableNames = null;
+                _animatableNames = AnimationTesterHelper.GetNames(_animatables);
+                _clipNamesBackup.Clear();
+                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
+                _controllersBackup.Clear();
+                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
             }
-            _animatables.Clear();
-            _animatables = AnimationTesterHelper.GetObjectsWithAnimator();
-            _animatableNames = null;
-            _animatableNames = AnimationTesterHelper.GetNames(_animatables);
-            _clipNamesBackup.Clear();
-            _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
-            _controllersBackup.Clear();
-            _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
-            //Debug.Log("Updating \"animatables\" list");
+            catch (System.Exception ) { }
         }
 
 

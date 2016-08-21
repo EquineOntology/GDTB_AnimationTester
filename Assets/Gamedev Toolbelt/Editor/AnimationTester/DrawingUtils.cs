@@ -14,9 +14,9 @@ namespace com.immortalhydra.gdtb.animationtester
 
 
         /// Draw the button, based on the type, not pressed.
-        public static void DrawButton(Rect aRect, ButtonsDisplayFormat aButtonType, Texture2D aTexture, string aText, GUIStyle aStyle)
+        public static void DrawButton(Rect aRect, Texture2D aTexture, string aText, GUIStyle aStyle)
         {
-            if(aButtonType == ButtonsDisplayFormat.COOL_ICONS)
+            if(Preferences.ButtonsDisplay == ButtonsDisplayFormat.COOL_ICONS)
             {
                 DrawIconButton(aRect, aTexture);
             }

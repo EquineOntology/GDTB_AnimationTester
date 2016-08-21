@@ -10,9 +10,11 @@ namespace com.immortalhydra.gdtb.animationtester
         public static void PlayAnimation(Animator animator, AnimationClip clip)
         {
             var controller = CreateControllerFromClip(clip);
+            CloneParameters(controller, animator);
             animator.runtimeAnimatorController = controller;
             animator.Play(clip.name);
         }
+
 
         private static AnimatorController CreateControllerFromClip(AnimationClip clip)
         {
@@ -27,6 +29,13 @@ namespace com.immortalhydra.gdtb.animationtester
             return controller;
         }
 
+
+        private static void CloneParameters(AnimatorController controller, Animator animator)
+        {
+            controller.parameters = animator.parameters;
+        }
+
+
         public static string[] GetNames(AnimationClip[] animationClips)
         {
             var nameHolder = new string[animationClips.Length];
@@ -36,6 +45,7 @@ namespace com.immortalhydra.gdtb.animationtester
             }
             return nameHolder;
         }
+
 
         public static string[] GetNames(List<Animator> animatables)
         {
@@ -47,6 +57,7 @@ namespace com.immortalhydra.gdtb.animationtester
             return nameHolder;
         }
 
+
         public static string[] GetNames(Animator animator)
         {
             var clips = UnityEditor.AnimationUtility.GetAnimationClips(animator.gameObject);
@@ -54,6 +65,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
             return names;
         }
+
 
         public static List<Animator> GetObjectsWithAnimator()
         {
@@ -69,6 +81,7 @@ namespace com.immortalhydra.gdtb.animationtester
             }
             return gos;
         }
+
 
         public static Dictionary<int, string[]> BuildClipNamesBackup(List<Animator> animatables)
         {
@@ -94,7 +107,8 @@ namespace com.immortalhydra.gdtb.animationtester
             return backup;
         }
 
-        public static Dictionary <int, RuntimeAnimatorController> BuildControllersBackup (List<Animator> animatables)
+
+        public static Dictionary <int, RuntimeAnimatorController> BuildControllersBackup(List<Animator> animatables)
         {
             var backup = new Dictionary<int, RuntimeAnimatorController>();
 
@@ -107,20 +121,5 @@ namespace com.immortalhydra.gdtb.animationtester
 
             return backup;
         }
-
-        /* public static AnimationClip GetClipByName(string name, Animator animator)
-        {
-            var clips = UnityEditor.AnimationUtility.GetAnimationClips(animator.gameObject);
-            var clipNames = GetNames(clips);
-
-            for (int i = 0; i < clipNames.Length; i++)
-            {
-                if (clipNames[i] == name)
-                {
-                    return clips[i];
-                }
-            }
-            return null;
-        }*/
     }
 }
