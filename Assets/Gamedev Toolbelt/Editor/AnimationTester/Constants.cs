@@ -5,12 +5,12 @@ namespace com.immortalhydra.gdtb.animationtester
         public const string FILE_GUISKIN = "GUI/animationtester_skin";
 
 		public const string TEX_PLAY_DARK = "GUI/gdtb_PLAY_dark";
-		public const string TEX_COMPLETE_DARK = "GUI/gdtb_COMPLETE_dark";
+		public const string TEX_SELECT_DARK = "GUI/gdtb_SELECT_dark";
 		public const string TEX_SETTINGS_DARK = "GUI/gdtb_SETTINGS_dark";
         public const string TEX_REFRESH_DARK = "GUI/gdtb_REFRESH_dark";
 
 		public const string TEX_PLAY_LIGHT = "GUI/gdtb_PLAY_light";
-		public const string TEX_COMPLETE_LIGHT = "GUI/gdtb_COMPLETE_light";
+		public const string TEX_SELECT_LIGHT = "GUI/gdtb_SELECT_light";
 		public const string TEX_SETTINGS_LIGHT = "GUI/gdtb_SETTINGS_light";
         public const string TEX_REFRESH_LIGHT = "GUI/gdtb_REFRESH_light";
 

@@ -70,3 +70,4 @@ support@immortalhydra.com
 
 ASCII titles realized with http://patorjk.com/software/taag/ ("ASCII Shadow" and
 "Calvin S" styles).
+Icons by Icons8 https://icons8.com/

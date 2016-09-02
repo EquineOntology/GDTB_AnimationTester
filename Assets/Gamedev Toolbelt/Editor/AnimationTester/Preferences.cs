@@ -91,9 +91,9 @@ namespace com.immortalhydra.gdtb.animationtester
             _buttonsDisplay = (ButtonsDisplayFormat)EditorGUILayout.Popup("Button style", System.Convert.ToInt16(_buttonsDisplay), _buttonsFormatsString);
             _iconStyle = (IconStyle)EditorGUILayout.Popup("Icon style", (int)_iconStyle, arr_iconStyle);
             EditorGUILayout.Separator();
-            _primary = EditorGUILayout.ColorField("Background and button color", _primary);
-            _secondary = EditorGUILayout.ColorField("Accent and bold text color", _secondary);
-            _tertiary = EditorGUILayout.ColorField("Normal text color", _tertiary);
+            _primary = EditorGUILayout.ColorField("Background", _primary);
+            _secondary = EditorGUILayout.ColorField("Bold text and button color", _secondary);
+            _tertiary = EditorGUILayout.ColorField("Text color", _tertiary);
             EditorGUILayout.Separator();
             DrawThemeButtons();
             GUILayout.Space(20);
