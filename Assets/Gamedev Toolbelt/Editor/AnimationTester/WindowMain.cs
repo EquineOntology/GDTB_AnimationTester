@@ -11,15 +11,18 @@ namespace com.immortalhydra.gdtb.animationtester
             get { return Instance != null; }
         }
 
-        // Animatables: gameobjects with Animator component.
-        private List<Animator> _animatables;
+        // Animatables: gameobjects with Animator/Animation component.
+        private List<Animator> _animators;
+        private List<Animation> _animations;
         private bool _collectedAnimatables = false;
         private string[] _animatableNames;
         private int _currentAnimatablesIndex = 0;
 
+        #if !UNITY_5_4_OR_NEWER
         // ControllersBackup: a backup of all original animator controllers.
-        // Used to reassign the original controller to an animator.
+        // Used to reassign the original controller to an animator for Unity<5.4.
         private Dictionary<int, RuntimeAnimatorController> _controllersBackup = new Dictionary<int, RuntimeAnimatorController>();
+        #endif
 
         // AnimatableClips: Animation Clips of an animatable.
         private AnimationClip[] _animatableClips;
@@ -46,6 +49,12 @@ namespace com.immortalhydra.gdtb.animationtester
         [MenuItem("Window/Gamedev Toolbelt/AnimationTester %t")]
         static void Init()
         {
+            // If AnimationTester has not been initialized, or EditorPrefs have been lost for some reason, reset them to default.
+            if(!EditorPrefs.HasKey("GDTB_AnimationTester_initialized") || EditorPrefs.GetBool("GDTB_AnimationTester_initialized", false) == false)
+            {
+                Preferences.InitPrefs();
+            }
+
             // Get existing open window or, if none exists, make a new one.
             var window = (WindowMain)EditorWindow.GetWindow (typeof (WindowMain));
             window.SetMinSize();
@@ -73,16 +82,20 @@ namespace com.immortalhydra.gdtb.animationtester
             LoadSkin();
             LoadStyles();
 
-            // Populate list of gameobjects with animator, but only once.
+            // Populate list of gameobjects with animator/animation, but only once.
             if(_collectedAnimatables == false)
             {
-                _animatables = AnimationTesterHelper.GetObjectsWithAnimator();
+                _animators = AnimationTesterHelper.GetObjectsWithAnimator();
+                _animations = AnimationTesterHelper.GetObjectsWithAnimation();
                 _collectedAnimatables = true;
-                _animatableNames = AnimationTesterHelper.GetNames(_animatables);
+                _animatableNames = AnimationTesterHelper.GetNames(_animators, _animations);
 
                 // Build the backups.
-                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
-                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
+                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animators, _animations);
+
+                #if !UNITY_5_4_OR_NEWER
+                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animators);
+                #endif
             }
         }
 
@@ -101,16 +114,23 @@ namespace com.immortalhydra.gdtb.animationtester
             DrawWindowBackground();
 
             // If there are no animatables in the scene, tell the user.
-            if (_animatables.Count == 0)
+            if (_animations.Count == 0 && _animators.Count == 0)
             {
                 DrawNoAnimatablesMessage();
             }
             else
             {
                 DrawListOfAnimatables();
-                if (_animatables != null && _currentAnimatablesIndex < _animatables.Count)
+                if (/*_animatables != null && */_currentAnimatablesIndex < (_animators.Count + _animations.Count))
                 {
-                    DrawListOfAnimations(_animatables[_currentAnimatablesIndex]);
+                    if(_currentAnimatablesIndex < _animators.Count)
+                    {
+                        DrawListOfAnimations(_animators[_currentAnimatablesIndex]);
+                    }
+                    else
+                    {
+                        DrawListOfAnimations(_animations[_currentAnimatablesIndex - _animators.Count]);
+                    }
                 }
 
                 DrawPlay();
@@ -160,9 +180,15 @@ namespace com.immortalhydra.gdtb.animationtester
             _currentAnimatablesIndex = EditorGUI.Popup(popupRect, _currentAnimatablesIndex, _animatableNames);
 
             // If the selected animatable changes, update the list of animations.
-            if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < _animatables.Count)
+            if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < (_animators.Count + _animations.Count))
             {
-                RevertToPreviousAnimator(_animatables[tempIndex]);
+                #if !UNITY_5_4_OR_NEWER
+                if(_currentAnimatablesIndex < _animators.Count)
+                {
+                    RevertToPreviousAnimator(_animators[tempIndex]);
+                }
+                #endif
+
                 _shouldUpdateClips = true;
             }
 
@@ -198,49 +224,6 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        // Draws the popup with the list of animations.
-        private void DrawListOfAnimations(Animator animatable)
-        {
-            if (_shouldUpdateClips == true)
-            {
-                UpdateClips(animatable);
-                _shouldUpdateClips = false;
-            }
-
-            var labelRect = new Rect(_offset, _iconSize * 2.5f, _popupWidth, _buttonHeight);
-            var popupRect = new Rect(_offset, _iconSize * 2.3f + _offset * 5, _popupWidth, _buttonHeight);
-
-            EditorGUI.LabelField(labelRect, "Select clip:", _style_boldLabel);
-            _currentClipIndex = EditorGUI.Popup(popupRect, _currentClipIndex, _animatableClipNames);
-
-            Rect refreshRect;
-            GUIContent refreshContent;
-            switch (Preferences.ButtonsDisplay)
-            {
-                case ButtonsDisplayFormat.REGULAR_BUTTONS:
-                    Button_Refresh_default(out refreshRect, out refreshContent);
-                    break;
-				case ButtonsDisplayFormat.COOL_ICONS:
-                default:
-                    Button_Refresh_icon(out refreshRect, out refreshContent);
-                    break;
-            }
-
-            // Refresh list from the animation controller, but only if in play mode (otherwise throws exception).
-            if (Controls.Button(refreshRect, refreshContent))
-            {
-                if (!Application.isPlaying)
-                {
-                    var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
-                    sceneWindow.ShowNotification(new GUIContent("To refresh the list of animations you must be in Play mode."));
-                }
-                else
-                {
-                    UpdateClips(animatable);
-                }
-            }
-        }
-
         private void Button_Refresh_default(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(_popupWidth + _offset * 3,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth, _buttonHeight);
@@ -271,14 +254,21 @@ namespace com.immortalhydra.gdtb.animationtester
 
             if(Controls.Button(playRect, playContent))
             {
-                if (!Application.isPlaying)
+                if(!Application.isPlaying)
                 {
                     var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
                     sceneWindow.ShowNotification(new GUIContent("To play an animation you must be in Play mode."));
                 }
                 else
                 {
-                    AnimationTesterHelper.PlayAnimation(_animatables[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
+                    if(_currentAnimatablesIndex < _animators.Count)
+                    {
+                        AnimationTesterHelper.PlayAnimation(_animators[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
+                    }
+                    else
+                    {
+                        AnimationTesterHelper.PlayAnimation(_animations[_currentAnimatablesIndex - _animators.Count], _animatableClips[_currentClipIndex]);
+                    }
                 }
             }
         }
@@ -345,22 +335,77 @@ namespace com.immortalhydra.gdtb.animationtester
             // Since this is pretty much inevitable, and will correct itself next frame, what we do is swallow the exception and wait for the next draw call.
             try
             {
-                if(_animatables.Count != 0 && _currentAnimatablesIndex < _animatables.Count && _animatables[_currentAnimatablesIndex] != null)
+                #if !UNITY_5_4_OR_NEWER
+                if( _animators.Count != 0 &&
+                    _currentAnimatablesIndex < _animators.Count  &&
+                    _animators[_currentAnimatablesIndex] != null)
                 {
                     RevertToPreviousAnimator(_animatables[_currentAnimatablesIndex]);
                 }
-                _animatables.Clear();
-                _animatables = AnimationTesterHelper.GetObjectsWithAnimator();
+                #endif
+
+                _animators.Clear();
+                _animations.Clear();
+                _animators = AnimationTesterHelper.GetObjectsWithAnimator();
+                _animations = AnimationTesterHelper.GetObjectsWithAnimation();
                 _animatableNames = null;
-                _animatableNames = AnimationTesterHelper.GetNames(_animatables);
+                _animatableNames = AnimationTesterHelper.GetNames(_animators, _animations);
                 _clipNamesBackup.Clear();
-                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animatables);
+                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animators, _animations);
+
+                #if !UNITY_5_4_OR_NEWER
                 _controllersBackup.Clear();
-                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animatables);
+                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animators);
+                #endif
             }
             catch (System.Exception ) { }
         }
 
+
+#region Animator
+
+        // Draws the popup with the list of animations for objects with an Animator.
+        private void DrawListOfAnimations(Animator animatable)
+        {
+            if (_shouldUpdateClips == true)
+            {
+                UpdateClips(animatable);
+                _shouldUpdateClips = false;
+            }
+
+            var labelRect = new Rect(_offset, _iconSize * 2.5f, _popupWidth, _buttonHeight);
+            var popupRect = new Rect(_offset, _iconSize * 2.3f + _offset * 5, _popupWidth, _buttonHeight);
+
+            EditorGUI.LabelField(labelRect, "Select clip:", _style_boldLabel);
+            _currentClipIndex = EditorGUI.Popup(popupRect, _currentClipIndex, _animatableClipNames);
+
+            Rect refreshRect;
+            GUIContent refreshContent;
+            switch (Preferences.ButtonsDisplay)
+            {
+                case ButtonsDisplayFormat.REGULAR_BUTTONS:
+                    Button_Refresh_default(out refreshRect, out refreshContent);
+                    break;
+				case ButtonsDisplayFormat.COOL_ICONS:
+                default:
+                    Button_Refresh_icon(out refreshRect, out refreshContent);
+                    break;
+            }
+
+            // Refresh list from the animation controller, but only if in play mode (otherwise throws exception).
+            if (Controls.Button(refreshRect, refreshContent))
+            {
+                if (!Application.isPlaying)
+                {
+                    var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
+                    sceneWindow.ShowNotification(new GUIContent("To refresh the list of animations you must be in Play mode."));
+                }
+                else
+                {
+                    UpdateClips(animatable);
+                }
+            }
+        }
 
         /// Update the clips from an animatable
         private void UpdateClips(Animator animatable)
@@ -369,15 +414,12 @@ namespace com.immortalhydra.gdtb.animationtester
             UpdateClipNamesList(animatable);
         }
 
-
         /// Update the list of clip names from an animatable.
         private void UpdateClipNamesList(Animator animatable)
         {
             var key = animatable.GetInstanceID();
             _clipNamesBackup.TryGetValue(key, out _animatableClipNames);
-            //Debug.Log("Updating \"clips\" lists");
         }
-
 
         /// Update the list of animationClips from an animatable.
         private void UpdateClipsList(Animator animatable)
@@ -385,7 +427,7 @@ namespace com.immortalhydra.gdtb.animationtester
             _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
         }
 
-
+        #if !UNITY_5_4_OR_NEWER
         /// Switch to the original animator.
         private void RevertToPreviousAnimator(Animator anim)
         {
@@ -399,6 +441,83 @@ namespace com.immortalhydra.gdtb.animationtester
                 anim.runtimeAnimatorController = originalAnimator;
             }
         }
+        #endif
+
+#endregion
+
+
+#region Animation
+
+        // Draw the popup with the list of animations for objects with an Animation.
+        private void DrawListOfAnimations(Animation animatable)
+        {
+            if (_shouldUpdateClips == true)
+            {
+                UpdateClips(animatable);
+                _shouldUpdateClips = false;
+            }
+
+            var labelRect = new Rect(_offset, _iconSize * 2.5f, _popupWidth, _buttonHeight);
+            var popupRect = new Rect(_offset, _iconSize * 2.3f + _offset * 5, _popupWidth, _buttonHeight);
+
+            EditorGUI.LabelField(labelRect, "Select clip:", _style_boldLabel);
+            _currentClipIndex = EditorGUI.Popup(popupRect, _currentClipIndex, _animatableClipNames);
+
+            Rect refreshRect;
+            GUIContent refreshContent;
+            switch (Preferences.ButtonsDisplay)
+            {
+                case ButtonsDisplayFormat.REGULAR_BUTTONS:
+                    Button_Refresh_default(out refreshRect, out refreshContent);
+                    break;
+				case ButtonsDisplayFormat.COOL_ICONS:
+                default:
+                    Button_Refresh_icon(out refreshRect, out refreshContent);
+                    break;
+            }
+
+            // Refresh list from the animation controller, but only if in play mode (otherwise throws exception).
+            if (Controls.Button(refreshRect, refreshContent))
+            {
+                if (!Application.isPlaying)
+                {
+                    var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
+                    sceneWindow.ShowNotification(new GUIContent("To refresh the list of animations you must be in Play mode."));
+                }
+                else
+                {
+                    UpdateClips(animatable);
+                }
+            }
+        }
+
+        private void UpdateClips(Animation animatable)
+        {
+            UpdateClipsList(animatable);
+            UpdateClipNamesList(animatable);
+        }
+
+        private void UpdateClipsList(Animation animatable)
+        {
+            var clips = new List<AnimationClip>();
+            foreach(AnimationState state in animatable)
+            {
+                clips.Add(state.clip);
+            }
+
+            _animatableClips = new AnimationClip[clips.Count];
+            for(var i = 0; i < clips.Count; i++)
+            {
+                _animatableClips[i] = clips[i];
+            }
+        }
+
+        private void UpdateClipNamesList(Animation animatable)
+        {
+            var key = animatable.GetInstanceID();
+            _clipNamesBackup.TryGetValue(key, out _animatableClipNames);
+        }
+#endregion
 
 
         /// Load custom skin.
