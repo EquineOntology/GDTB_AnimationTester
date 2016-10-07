@@ -23,5 +23,12 @@ namespace com.immortalhydra.gdtb.animationtester
 
             return color;
         }
+
+
+        // Return a color with rgba values between 0 and 1.
+        public static Color GetNormalizedColor(Color aColor)
+        {
+            return new Color(aColor.r / 255.0f, aColor.g / 255.0f, aColor.b / 255.0f, aColor.a);
+        }
     }
 }

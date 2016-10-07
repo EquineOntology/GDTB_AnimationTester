@@ -10,6 +10,7 @@ namespace com.immortalhydra.gdtb.animationtester
 		{
 			var shouldFire = false;
 			var controlID = GUIUtility.GetControlID(FocusType.Passive);
+           // var state
 
 			switch (Event.current.GetTypeForControl(controlID))
 			{
@@ -49,10 +50,7 @@ namespace com.immortalhydra.gdtb.animationtester
 		}
 
 
-		private static void DrawUnpressedBG(Rect aRect, GUIContent aContent)
-		{
-			EditorGUI.DrawRect(aRect, Preferences.Color_Primary);
-		}
+		//public static int SelectionGrid()
 
 
 		private static void DrawUnpressedButton(Rect aRect, GUIContent aContent)

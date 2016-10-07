@@ -129,6 +129,14 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// If EditorPrefs have been lost or have never been initialized, we want to set them to their default values.
+        public static void InitPrefs()
+        {
+            ResetPrefsToDefault();
+            EditorPrefs.SetBool("GDTB_AnimationTester_initialized", true);
+        }
+
+
         /// Set the value of all preferences.
         private static void SetPrefValues()
         {
@@ -171,9 +179,9 @@ namespace com.immortalhydra.gdtb.animationtester
                 // Get confirmation through dialog (or not if the user doesn't want to).
                 if (EditorUtility.DisplayDialog("Change to dark theme?", "Are you sure you want to change the color scheme to the dark (default) theme?", "Change color scheme", "Cancel"))
                 {
-                    _primary = new Color(_primary_dark.r / 255.0f, _primary_dark.g / 255.0f, _primary_dark.b / 255.0f, 1.0f);
-                    _secondary = new Color(_secondary_dark.r / 255.0f, _secondary_dark.g / 255.0f, _secondary_dark.b / 255.0f, 1.0f);
-                    _tertiary = new Color(_tertiary_dark.r / 255.0f, _tertiary_dark.g / 255.0f, _tertiary_dark.b / 255.0f, 1.0f);
+                    _primary = RGBA.GetNormalizedColor(_primary_dark);
+                    _secondary = RGBA.GetNormalizedColor(_secondary_dark);
+                    _tertiary = RGBA.GetNormalizedColor(_tertiary_dark);
                     SetColorPrefs();
                     GetColorPrefs();
 
@@ -190,9 +198,9 @@ namespace com.immortalhydra.gdtb.animationtester
                 // Get confirmation through dialog (or not if the user doesn't want to).
                 if (EditorUtility.DisplayDialog("Change to light theme?", "Are you sure you want to change the color scheme to the light theme?", "Change color scheme", "Cancel"))
                 {
-                    _primary = new Color(_primary_light.r / 255.0f, _primary_light.g / 255.0f, _primary_light.b / 255.0f, 1.0f);
-                    _secondary = new Color(_secondary_light.r / 255.0f, _secondary_light.g / 255.0f, _secondary_light.b / 255.0f, 1.0f);
-                    _tertiary = new Color(_tertiary_light.r / 255.0f, _tertiary_light.g / 255.0f, _tertiary_light.b / 255.0f, 1.0f);
+                    _primary = RGBA.GetNormalizedColor(_primary_light);
+                    _secondary = RGBA.GetNormalizedColor(_secondary_light);
+                    _tertiary = RGBA.GetNormalizedColor(_tertiary_light);
                     SetColorPrefs();
                     GetColorPrefs();
 
@@ -212,7 +220,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the value of the shortcut preference.
         private static void SetShortcutPrefs()
         {
-            if (_newShortcut != _shortcut)
+            if (_newShortcut != _shortcut && _newShortcut != null)
             {
                 _shortcut = _newShortcut;
                 EditorPrefs.SetString(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut);
@@ -246,9 +254,18 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Load color preferences.
         private static void GetColorPrefs()
         {
-            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, _primary_default); // PRIMARY color.
-            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, _secondary_default); // SECONDARY color.
-            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, _tertiary_default); // TERTIARY color.
+            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.GetNormalizedColor(_primary_default)); // PRIMARY color.
+            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.GetNormalizedColor(_secondary_default)); // SECONDARY color.
+            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.GetNormalizedColor(_tertiary_default)); // TERTIARY color.
+
+            // If all colors are the same, there's been some issue. Revert to initial dark scheme.
+            if(_primary == _secondary && _primary == _tertiary)
+            {
+                _primary = RGBA.GetNormalizedColor(_primary_default);
+                _secondary = RGBA.GetNormalizedColor(_secondary_default);
+                _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
+                _iconStyle = (IconStyle)_iconStyle_default;
+            }
         }
 
 
@@ -392,9 +409,10 @@ namespace com.immortalhydra.gdtb.animationtester
         private static void ResetPrefsToDefault()
         {
             _buttonsDisplay = (ButtonsDisplayFormat)_buttonsDisplay_default;
-            _primary = new Color(_primary_default.r / 255, _primary_default.g / 255, _primary_default.b / 255, _primary_default.a);
-            _secondary = new Color(_secondary_default.r / 255, _secondary_default.g / 255, _secondary_default.b / 255, _secondary_default.a);
-            _tertiary = new Color(_tertiary_default.r / 255, _tertiary_default.g / 255, _tertiary_default.b / 255, _tertiary_default.a);
+            _primary = RGBA.GetNormalizedColor(_primary_default);
+            _secondary = RGBA.GetNormalizedColor(_secondary_default);
+            _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
+            _iconStyle = (IconStyle)_iconStyle_default;
             _shortcut = _shortcut_default;
 
             SetPrefValues();
