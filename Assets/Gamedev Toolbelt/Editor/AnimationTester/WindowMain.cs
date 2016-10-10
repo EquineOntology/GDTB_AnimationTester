@@ -105,7 +105,7 @@ namespace com.immortalhydra.gdtb.animationtester
             UpdateAnimatables();
             _currentAnimatablesIndex = 0;
             _currentClipIndex = 0;
-            Instance.Repaint();
+            _shouldUpdateClips = true;
         }
 
 
@@ -121,7 +121,7 @@ namespace com.immortalhydra.gdtb.animationtester
             else
             {
                 DrawListOfAnimatables();
-                if (/*_animatables != null && */_currentAnimatablesIndex < (_animators.Count + _animations.Count))
+                if (_currentAnimatablesIndex < (_animators.Count + _animations.Count))
                 {
                     if(_currentAnimatablesIndex < _animators.Count)
                     {
@@ -173,17 +173,15 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             var labelRect = new Rect(_offset, _offset, _popupWidth, _buttonHeight);
             var popupRect = new Rect(_offset, _offset * 5, _popupWidth, _buttonHeight);
-            //Debug.Log("Drawing list of animations");
             EditorGUI.LabelField(labelRect, "Select gameobject:", _style_boldLabel);
 
             var tempIndex = _currentAnimatablesIndex;
             _currentAnimatablesIndex = EditorGUI.Popup(popupRect, _currentAnimatablesIndex, _animatableNames);
-
             // If the selected animatable changes, update the list of animations.
             if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < (_animators.Count + _animations.Count))
             {
                 #if !UNITY_5_4_OR_NEWER
-                if(_currentAnimatablesIndex < _animators.Count)
+                if(tempIndex < _animators.Count)
                 {
                     RevertToPreviousAnimator(_animators[tempIndex]);
                 }
@@ -340,7 +338,7 @@ namespace com.immortalhydra.gdtb.animationtester
                     _currentAnimatablesIndex < _animators.Count  &&
                     _animators[_currentAnimatablesIndex] != null)
                 {
-                    RevertToPreviousAnimator(_animatables[_currentAnimatablesIndex]);
+                    RevertToPreviousAnimator(_animators[_currentAnimatablesIndex]);
                 }
                 #endif
 

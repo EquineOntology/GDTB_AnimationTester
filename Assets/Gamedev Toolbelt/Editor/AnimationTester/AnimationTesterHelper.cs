@@ -11,18 +11,15 @@ namespace com.immortalhydra.gdtb.animationtester
     {
 
         #if UNITY_5_4_OR_NEWER
+
         public static void PlayAnimation (Animator animator, AnimationClip clip)
         {
             var playableClip = AnimationClipPlayable.Create(clip);
             animator.Play(playableClip);
         }
-        public static void PlayAnimation (Animation animation, AnimationClip clip)
-        {
-            animation.Play(clip.name);
-        }
-
 
         #else
+
         public static void PlayAnimation(Animator animator, AnimationClip clip)
         {
             var controller = CreateControllerFromClip(clip);
@@ -60,6 +57,12 @@ namespace com.immortalhydra.gdtb.animationtester
             return backup;
         }
         #endif
+
+
+        public static void PlayAnimation (Animation animation, AnimationClip clip)
+        {
+            animation.Play(clip.name);
+        }
 
 
         public static string[] GetNames(AnimationClip[] animationClips)
