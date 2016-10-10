@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 #if UNITY_5_4_OR_NEWER
 using UnityEngine.Experimental.Director;
 #endif
