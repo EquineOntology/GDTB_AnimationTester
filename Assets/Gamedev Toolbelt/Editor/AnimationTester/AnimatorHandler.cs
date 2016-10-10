@@ -61,7 +61,7 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             controller.parameters = animator.parameters;
         }
-
+#endif
 
         public static Dictionary <int, RuntimeAnimatorController> BuildControllersBackup(List<Animator> animators)
         {
@@ -75,8 +75,5 @@ namespace com.immortalhydra.gdtb.animationtester
             }
             return backup;
         }
-
-#endif
-
     }
 }

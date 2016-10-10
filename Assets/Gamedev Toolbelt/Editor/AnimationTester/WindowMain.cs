@@ -18,11 +18,11 @@ namespace com.immortalhydra.gdtb.animationtester
         private string[] _animatableNames;
         private int _currentAnimatablesIndex = 0;
 
-        #if !UNITY_5_4_OR_NEWER
+
         // ControllersBackup: a backup of all original animator controllers.
         // Used to reassign the original controller to an animator for Unity<5.4.
         private Dictionary<int, RuntimeAnimatorController> _controllersBackup = new Dictionary<int, RuntimeAnimatorController>();
-        #endif
+
 
         // AnimatableClips: Animation Clips of an animatable.
         private AnimationClip[] _animatableClips;
@@ -180,12 +180,10 @@ namespace com.immortalhydra.gdtb.animationtester
             // If the selected animatable changes, update the list of animations.
             if (tempIndex != _currentAnimatablesIndex && _currentAnimatablesIndex < (_animators.Count + _animations.Count))
             {
-                #if !UNITY_5_4_OR_NEWER
                 if(tempIndex < _animators.Count)
                 {
                     RevertToPreviousAnimator(_animators[tempIndex]);
                 }
-                #endif
 
                 _shouldUpdateClips = true;
             }
@@ -333,14 +331,12 @@ namespace com.immortalhydra.gdtb.animationtester
             // Since this is pretty much inevitable, and will correct itself next frame, what we do is swallow the exception and wait for the next draw call.
             try
             {
-                #if !UNITY_5_4_OR_NEWER
                 if( _animators.Count != 0 &&
                     _currentAnimatablesIndex < _animators.Count  &&
                     _animators[_currentAnimatablesIndex] != null)
                 {
                     RevertToPreviousAnimator(_animators[_currentAnimatablesIndex]);
                 }
-                #endif
 
                 _animators.Clear();
                 _animations.Clear();
@@ -351,17 +347,15 @@ namespace com.immortalhydra.gdtb.animationtester
                 _clipNamesBackup.Clear();
                 _clipNamesBackup = AnimationClipHandler.BuildClipNamesBackup(_animators, _animations);
 
-                #if !UNITY_5_4_OR_NEWER
                 _controllersBackup.Clear();
-                _controllersBackup = AnimationClipHandler.BuildControllersBackup(_animators);
-                #endif
+                _controllersBackup = AnimatorHandler.BuildControllersBackup(_animators);
+
             }
-            catch (System.Exception ) { }
+            catch (System.Exception) { }
         }
 
 
 #region Animator
-
         // Draws the popup with the list of animations for objects with an Animator.
         private void DrawListOfAnimations(Animator animatable)
         {
@@ -424,28 +418,10 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
         }
-
-        #if !UNITY_5_4_OR_NEWER
-        /// Switch to the original animator.
-        private void RevertToPreviousAnimator(Animator anim)
-        {
-            var key = anim.GetInstanceID();
-            RuntimeAnimatorController originalAnimator;
-
-            var gottenValue = _controllersBackup.TryGetValue(key, out originalAnimator);
-
-            if (gottenValue == true)
-            {
-                anim.runtimeAnimatorController = originalAnimator;
-            }
-        }
-        #endif
-
 #endregion
 
 
 #region Animation
-
         // Draw the popup with the list of animations for objects with an Animation.
         private void DrawListOfAnimations(Animation animatable)
         {
@@ -516,6 +492,21 @@ namespace com.immortalhydra.gdtb.animationtester
             _clipNamesBackup.TryGetValue(key, out _animatableClipNames);
         }
 #endregion
+
+
+        /// Switch to the original animator.
+        private void RevertToPreviousAnimator(Animator anim)
+        {
+            var key = anim.GetInstanceID();
+            RuntimeAnimatorController originalAnimator;
+
+            var gottenValue = _controllersBackup.TryGetValue(key, out originalAnimator);
+
+            if (gottenValue == true)
+            {
+                anim.runtimeAnimatorController = originalAnimator;
+            }
+        }
 
 
         /// Load custom skin.
