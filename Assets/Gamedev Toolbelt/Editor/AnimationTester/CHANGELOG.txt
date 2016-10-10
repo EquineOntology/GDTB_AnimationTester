@@ -1,0 +1,9 @@
+====== 1.1 =====
+
+ * AnimationTester now also supports gameobjects with the Animation component, not only Animators!
+ * New icons and button style!
+ * Buttons are now highlighted when hovered over.
+
+====== 1.0 =====
+
+* Initial release
