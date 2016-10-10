@@ -85,16 +85,16 @@ namespace com.immortalhydra.gdtb.animationtester
             // Populate list of gameobjects with animator/animation, but only once.
             if(_collectedAnimatables == false)
             {
-                _animators = AnimationTesterHelper.GetObjectsWithAnimator();
-                _animations = AnimationTesterHelper.GetObjectsWithAnimation();
+                _animators = AnimatorHandler.GetObjectsWithAnimator();
+                _animations = AnimationHandler.GetObjectsWithAnimation();
                 _collectedAnimatables = true;
-                _animatableNames = AnimationTesterHelper.GetNames(_animators, _animations);
+                _animatableNames = AnimationClipHandler.GetNames(_animators, _animations);
 
                 // Build the backups.
-                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animators, _animations);
+                _clipNamesBackup = AnimationClipHandler.BuildClipNamesBackup(_animators, _animations);
 
                 #if !UNITY_5_4_OR_NEWER
-                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animators);
+                _controllersBackup = AnimationClipHandler.BuildControllersBackup(_animators);
                 #endif
             }
         }
@@ -261,11 +261,11 @@ namespace com.immortalhydra.gdtb.animationtester
                 {
                     if(_currentAnimatablesIndex < _animators.Count)
                     {
-                        AnimationTesterHelper.PlayAnimation(_animators[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
+                        AnimatorHandler.PlayAnimation(_animators[_currentAnimatablesIndex], _animatableClips[_currentClipIndex]);
                     }
                     else
                     {
-                        AnimationTesterHelper.PlayAnimation(_animations[_currentAnimatablesIndex - _animators.Count], _animatableClips[_currentClipIndex]);
+                        AnimationHandler.PlayAnimation(_animations[_currentAnimatablesIndex - _animators.Count], _animatableClips[_currentClipIndex]);
                     }
                 }
             }
@@ -344,16 +344,16 @@ namespace com.immortalhydra.gdtb.animationtester
 
                 _animators.Clear();
                 _animations.Clear();
-                _animators = AnimationTesterHelper.GetObjectsWithAnimator();
-                _animations = AnimationTesterHelper.GetObjectsWithAnimation();
+                _animators = AnimatorHandler.GetObjectsWithAnimator();
+                _animations = AnimationHandler.GetObjectsWithAnimation();
                 _animatableNames = null;
-                _animatableNames = AnimationTesterHelper.GetNames(_animators, _animations);
+                _animatableNames = AnimationClipHandler.GetNames(_animators, _animations);
                 _clipNamesBackup.Clear();
-                _clipNamesBackup = AnimationTesterHelper.BuildClipNamesBackup(_animators, _animations);
+                _clipNamesBackup = AnimationClipHandler.BuildClipNamesBackup(_animators, _animations);
 
                 #if !UNITY_5_4_OR_NEWER
                 _controllersBackup.Clear();
-                _controllersBackup = AnimationTesterHelper.BuildControllersBackup(_animators);
+                _controllersBackup = AnimationClipHandler.BuildControllersBackup(_animators);
                 #endif
             }
             catch (System.Exception ) { }
