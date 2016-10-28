@@ -17,6 +17,14 @@ namespace com.immortalhydra.gdtb.animationtester
         }
         private static string[] _buttonsFormatsString = { "Cool icons", "Regular buttons" };
 
+        // Welcome window.
+        private const string PREFS_ANIMATIONTESTER_WELCOME = "GDTB_AnimationTester_Welcome";
+        private static bool _showWelcome = true;
+        private static bool _showWelcome_default = true;
+        public static bool ShowWelcome
+        {
+            get { return _showWelcome; }
+        }
 
         #region Colors
         // Style of icons (light or dark).
@@ -87,6 +95,9 @@ namespace com.immortalhydra.gdtb.animationtester
             GetAllPrefValues();
 
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, false, false);
+            EditorGUILayout.LabelField("General settings", EditorStyles.boldLabel);
+            _showWelcome = EditorGUILayout.Toggle("Show Welcome window", _showWelcome);
+            GUILayout.Space(20);
             EditorGUILayout.LabelField("UI", EditorStyles.boldLabel);
             _buttonsDisplay = (ButtonsDisplayFormat)EditorGUILayout.Popup("Button style", System.Convert.ToInt16(_buttonsDisplay), _buttonsFormatsString);
             _iconStyle = (IconStyle)EditorGUILayout.Popup("Icon style", (int)_iconStyle, arr_iconStyle);
@@ -140,10 +151,18 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Set the value of all preferences.
         private static void SetPrefValues()
         {
+            SetWelcome(_showWelcome);
             EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, System.Convert.ToInt16(_buttonsDisplay));
             SetIconStyle();
             SetColorPrefs();
             SetShortcutPrefs();
+        }
+
+
+        /// Set the value of ShowWelcome.
+        public static void SetWelcome(bool val)
+        {
+            EditorPrefs.SetBool(PREFS_ANIMATIONTESTER_WELCOME, val);
         }
 
 
@@ -233,6 +252,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
         public static void GetAllPrefValues()
         {
+            _showWelcome = GetPrefValue(PREFS_ANIMATIONTESTER_WELCOME, _showWelcome_default);
             _buttonsDisplay = (ButtonsDisplayFormat)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, _buttonsDisplay_default); // Buttons display.
             _oldDisplayFormat = _buttonsDisplay;
             GetIconStyle();
@@ -408,6 +428,8 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Reset all preferences to default.
         private static void ResetPrefsToDefault()
         {
+
+            _showWelcome = _showWelcome_default;
             _buttonsDisplay = (ButtonsDisplayFormat)_buttonsDisplay_default;
             _primary = RGBA.GetNormalizedColor(_primary_default);
             _secondary = RGBA.GetNormalizedColor(_secondary_default);

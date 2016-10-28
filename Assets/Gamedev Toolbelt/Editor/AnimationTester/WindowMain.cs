@@ -62,6 +62,11 @@ namespace com.immortalhydra.gdtb.animationtester
             window.LoadStyles();
 
             window.Show();
+
+            if(Preferences.ShowWelcome == true)
+            {
+                WindowWelcome.Init();
+            }
         }
 
 
@@ -552,6 +557,23 @@ namespace com.immortalhydra.gdtb.animationtester
         public void Update()
         {
             Repaint();
+        }
+
+
+        public void OnDestroy()
+        {
+            Resources.UnloadUnusedAssets();
+            CloseOtherWindows();
+        }
+
+
+        /// Close open sub-windows (add, edit) when opening prefs.
+        private void CloseOtherWindows()
+        {
+            if (WindowWelcome.IsOpen)
+            {
+                EditorWindow.GetWindow(typeof(WindowWelcome)).Close();
+            }
         }
     }
 }
