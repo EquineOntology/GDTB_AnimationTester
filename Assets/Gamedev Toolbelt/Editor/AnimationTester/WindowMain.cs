@@ -46,7 +46,7 @@ namespace com.immortalhydra.gdtb.animationtester
         private GUISkin _skin;
         private GUIStyle _style_buttonText, _style_boldLabel;
 
-        [MenuItem("Window/Gamedev Toolbelt/AnimationTester %t")]
+        [MenuItem("Window/Gamedev Toolbelt/AnimationTester/Open AnimationTester %t")]
         static void Init()
         {
             // If AnimationTester has not been initialized, or EditorPrefs have been lost for some reason, reset them to default.
