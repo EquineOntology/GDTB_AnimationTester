@@ -184,7 +184,7 @@ namespace com.immortalhydra.gdtb.animationtester
                     RevertToPreviousAnimator(_animators[tempIndex]);
                 }
 
-                _shouldUpdateClips = true;
+                UpdateClips();
             }
 
             Rect prevGameobjectRect;
@@ -193,9 +193,8 @@ namespace com.immortalhydra.gdtb.animationtester
 
             if (Controls.Button(prevGameobjectRect, prevGameobjectContent))
             {
-                //StopAnimation();
                 PreviousAnimatable();
-                _shouldUpdateClips = true;
+                UpdateClips();
             }
 
             Rect nextGameobjectRect;
@@ -204,9 +203,8 @@ namespace com.immortalhydra.gdtb.animationtester
 
             if (Controls.Button(nextGameobjectRect, nextGameobjectContent))
             {
-                //StopAnimation();
                 NextAnimatable();
-                _shouldUpdateClips = true;
+                UpdateClips();
             }
         }
 
@@ -218,7 +216,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
         private void SetupButton_NextGameobject(out Rect aRect, out GUIContent aContent)
         {
-            aRect = new Rect(_popupWidth + _buttonWidth, _iconSize * 1.5f  + _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aRect = new Rect(_popupWidth + _buttonWidth - _offset, _iconSize * 1.5f  + _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
             aContent = new GUIContent("Next", "Next gameobject");
         }
 
@@ -226,12 +224,14 @@ namespace com.immortalhydra.gdtb.animationtester
         // Change index of currently selected animatable to previous one in the list, and go around to the last one if index == 0.
         private void PreviousAnimatable()
         {
+            // First, we revert the current animator to its original runtimeController.
+            if(_currentAnimatablesIndex < _animators.Count)
+            {
+                RevertToPreviousAnimator(_animators[_currentAnimatablesIndex]);
+            }
+
             if(_currentAnimatablesIndex != 0)
             {
-                if(_currentAnimatablesIndex < _animators.Count)
-                {
-                    RevertToPreviousAnimator(_animators[_currentAnimatablesIndex]);
-                }
                 _currentAnimatablesIndex--;
             }
             else
@@ -244,25 +244,20 @@ namespace com.immortalhydra.gdtb.animationtester
         // Change index of currently selected animatable to next one in the list, and go around to the first one if max index.
         private void NextAnimatable()
         {
+            // First, we revert the current animator to its original runtimeController.
+            if(_currentAnimatablesIndex < _animators.Count)
+            {
+                RevertToPreviousAnimator(_animators[_currentAnimatablesIndex]);
+            }
+
             if(_currentAnimatablesIndex < (_animators.Count + _animations.Count - 1))
             {
-                if(_currentAnimatablesIndex < _animators.Count)
-                {
-                    RevertToPreviousAnimator(_animators[_currentAnimatablesIndex]);
-                }
                 _currentAnimatablesIndex++;
             }
             else if (_currentAnimatablesIndex == (_animators.Count + _animations.Count - 1))
             {
                 _currentAnimatablesIndex = 0;
             }
-        }
-
-
-        private void Button_Refresh(out Rect aRect, out GUIContent aContent)
-        {
-            aRect = new Rect(_popupWidth + _offset * 3,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth, _buttonHeight);
-            aContent = new GUIContent("Refresh", "Refresh list of animations");
         }
 
 
@@ -273,7 +268,7 @@ namespace com.immortalhydra.gdtb.animationtester
             GUIContent playContent;
 
 
-            Button_Play(out playRect, out playContent);
+            SetupButton_Play(out playRect, out playContent);
             if(Controls.Button(playRect, playContent))
             {
                 if(!Application.isPlaying)
@@ -295,7 +290,7 @@ namespace com.immortalhydra.gdtb.animationtester
             }
         }
 
-        private void Button_Play(out Rect aRect, out GUIContent aContent)
+        private void SetupButton_Play(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(0,0, _buttonWidth, _buttonHeight);
             aRect.x = ((_popupWidth + _offset * 3) + _buttonWidth) / 2 - _buttonWidth / 2;
@@ -310,7 +305,7 @@ namespace com.immortalhydra.gdtb.animationtester
             Rect settingsRect;
             GUIContent settingsContent;
 
-            Button_Settings(out settingsRect, out settingsContent);
+            SetupButton_Settings(out settingsRect, out settingsContent);
 
             if(Controls.Button(settingsRect, settingsContent))
             {
@@ -322,7 +317,7 @@ namespace com.immortalhydra.gdtb.animationtester
             }
         }
 
-        private void Button_Settings(out Rect aRect, out GUIContent aContent)
+        private void SetupButton_Settings(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(_offset, position.height - _buttonHeight - _offset, _buttonWidth, _buttonHeight);
             aContent = new GUIContent("Settings", "Open Settings");
@@ -363,29 +358,9 @@ namespace com.immortalhydra.gdtb.animationtester
         // Draws the popup with the list of animations for currently selected animatable.
         private void DrawListOfAnimations()
         {
-            Animator animator;
-            Animation animation;
-            if(_currentAnimatablesIndex < _animators.Count)
-            {
-                animator = _animators[_currentAnimatablesIndex];
-                animation = null;
-            }
-            else
-            {
-                animator = null;
-                animation = _animations[_currentAnimatablesIndex - _animators.Count];
-            }
-
             if (_shouldUpdateClips == true)
             {
-                if(animator == null)
-                {
-                    UpdateClips(animation);
-                }
-                else
-                {
-                    UpdateClips(animator);
-                }
+                UpdateClips();
                 _shouldUpdateClips = false;
             }
 
@@ -395,12 +370,79 @@ namespace com.immortalhydra.gdtb.animationtester
             EditorGUI.LabelField(labelRect, "Select clip:", _style_boldLabel);
             _currentClipIndex = EditorGUI.Popup(popupRect, _currentClipIndex, _animatableClipNames);
 
-            Rect refreshRect;
-            GUIContent refreshContent;
 
-            Button_Refresh(out refreshRect, out refreshContent);
+            Rect prevClipRect;
+            GUIContent prevClipContent;
 
-            // PREV/NEXT
+            SetupButton_PreviousClip(out prevClipRect, out prevClipContent);
+            if (Controls.Button(prevClipRect, prevClipContent))
+            {
+                PreviousClip();
+            }
+
+            Rect nextClipRect;
+            GUIContent nextClipContent;
+
+            SetupButton_NextClip(out nextClipRect, out nextClipContent);
+            if (Controls.Button(nextClipRect, nextClipContent))
+            {
+                NextClip();
+            }
+        }
+
+
+        private void SetupButton_PreviousClip(out Rect aRect, out GUIContent aContent)
+        {
+            aRect = new Rect(_popupWidth + _offset * 2,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aContent = new GUIContent("Prev", "Previous clip");
+        }
+
+
+        private void SetupButton_NextClip(out Rect aRect, out GUIContent aContent)
+        {
+            aRect = new Rect(_popupWidth + _buttonWidth - _offset,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aContent = new GUIContent("Next", "Next clip");
+        }
+
+
+        // Change index of currently selected clip to previous one in the list, and go around to the last one if index == 0.
+        private void PreviousClip()
+        {
+            if(_currentClipIndex > 0)
+            {
+                _currentClipIndex--;
+            }
+            else
+            {
+                _currentClipIndex = _animatableClips.Length - 1;
+            }
+        }
+
+
+        // Change index of currently selected clip to next one in the list, and go around to the first one if max index.
+        private void NextClip()
+        {
+            if(_currentClipIndex < _animatableClips.Length - 1)
+            {
+                _currentClipIndex++;
+            }
+            else
+            {
+                _currentClipIndex = 0;
+            }
+        }
+
+
+        private void UpdateClips()
+        {
+            if(_currentAnimatablesIndex < _animators.Count)
+            {
+                UpdateClips(_animators[_currentAnimatablesIndex]);
+            }
+            else
+            {
+                UpdateClips(_animations[_currentAnimatablesIndex - _animators.Count]);
+            }
         }
 
 
@@ -460,16 +502,16 @@ namespace com.immortalhydra.gdtb.animationtester
 
 
         /// Switch to the original animator.
-        private void RevertToPreviousAnimator(Animator anim)
+        private void RevertToPreviousAnimator(Animator animator)
         {
-            var key = anim.GetInstanceID();
+            var key = animator.GetInstanceID();
             RuntimeAnimatorController originalAnimator;
 
             var gottenValue = _controllersBackup.TryGetValue(key, out originalAnimator);
 
             if (gottenValue == true)
             {
-                anim.runtimeAnimatorController = originalAnimator;
+                animator.runtimeAnimatorController = originalAnimator;
             }
         }
 
