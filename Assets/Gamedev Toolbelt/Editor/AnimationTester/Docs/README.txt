@@ -1,27 +1,6 @@
---█████╗-███╗---██╗██╗███╗---███╗-█████╗-████████╗██╗-██████╗-███╗---██╗-
--██╔══██╗████╗--██║██║████╗-████║██╔══██╗╚══██╔══╝██║██╔═══██╗████╗--██║-
--███████║██╔██╗-██║██║██╔████╔██║███████║---██║---██║██║---██║██╔██╗-██║-
--██╔══██║██║╚██╗██║██║██║╚██╔╝██║██╔══██║---██║---██║██║---██║██║╚██╗██║-
--██║--██║██║-╚████║██║██║-╚═╝-██║██║--██║---██║---██║╚██████╔╝██║-╚████║-
--╚═╝--╚═╝╚═╝--╚═══╝╚═╝╚═╝-----╚═╝╚═╝--╚═╝---╚═╝---╚═╝-╚═════╝-╚═╝--╚═══╝-
--------------------------------------------------------------------------
----------████████╗███████╗███████╗████████╗███████╗██████╗---------------
----------╚══██╔══╝██╔════╝██╔════╝╚══██╔══╝██╔════╝██╔══██╗--------------
-------------██║---█████╗--███████╗---██║---█████╗--██████╔╝--------------
-------------██║---██╔══╝--╚════██║---██║---██╔══╝--██╔══██╗--------------
-------------██║---███████╗███████║---██║---███████╗██║--██║--------------
-------------╚═╝---╚══════╝╚══════╝---╚═╝---╚══════╝╚═╝--╚═╝--------------
-
-
 Hi! I'm Christian, the author of AnimationTester. Thank you for your purchase!
-If you're looking at this in the Unity inspector and are worried about the "noise",
-I just like ASCII titles :P But I included a plaintext version of all sub-headings
-just in case! :)
 
 
-  ┬ ┬┬ ┬┌─┐┌┬┐  ┬┌─┐  ╔═╗╔╗╔╦╔╦╗╔═╗╔╦╗╦╔═╗╔╗╔╔╦╗╔═╗╔═╗╔╦╗╔═╗╦═╗┌─┐
-  │││├─┤├─┤ │   │└─┐  ╠═╣║║║║║║║╠═╣ ║ ║║ ║║║║ ║ ║╣ ╚═╗ ║ ║╣ ╠╦╝ ┌┘
-  └┴┘┴ ┴┴ ┴ ┴   ┴└─┘  ╩ ╩╝╚╝╩╩ ╩╩ ╩ ╩ ╩╚═╝╝╚╝ ╩ ╚═╝╚═╝ ╩ ╚═╝╩╚═ o
      WHAT IS ANIMATIONTESTER?
 
 AnimationTester is a small extension which lets you choose and preview animations at runtime, to eliminate the need for "controller juggling".
@@ -31,29 +10,19 @@ I was an animator during my game development master's, and I quickly learned tha
 AnimationTester solves that. Testing animations in-engine is a snap.
 
 
-  ╦ ╦╔═╗╦ ╦  ┌┬┐┌─┐┌─┐┌─┐  ┬┌┬┐  ┬ ┬┌─┐┬─┐┬┌─┌─┐
-  ╠═╣║ ║║║║   │││ │├┤ └─┐  │ │   ││││ │├┬┘├┴┐ ┌┘
-  ╩ ╩╚═╝╚╩╝  ─┴┘└─┘└─┘└─┘  ┴ ┴   └┴┘└─┘┴└─┴ ┴ o
-     HOW DOES IT WORK?
+     HOW DO I USE IT?
 
-Using AnimationTester is quite straightforward. Its window will be dynamically populated by all gameobjects in the scene with an Animator or Animation.
+Using AnimationTester is quite straightforward.
+First, open the AnimationTester window (Window -> Gamedev Toolbelt -> AnimationTester); all gameobjects in the scene with an Animator or Animation will be selectable in the first popup.
 After entering play mode, you will then be able to select the animation, click play, and see it played!
 
-This is possible because AnimationTester creates, at runtime, a temporary controller with just your animation, effectively automating the process. And when you change
-clip or go out of play mode, your gameobject will have its original animator, no fiddling involved! And it's even easier with Animation components, since they need no change at all!
 
-It's really simple, but if you want to see it in action you can go to http://immortalhydra.com/stuff/animation-tester/ and see for yourself through the magical power of GIFs!
+     WILL IT BREAK MY ANIMATORS?
+
+Absolutely NOT! I developed AnimationTester to be the boy scout of assets, it won't leave any rubbish behind.
+If you want to see it in action you can go to http://immortalhydra.com/stuff/animation-tester/.
 
 
-  ┬ ┬┬ ┬┌─┐┬─┐┌─┐  ┌─┐┌─┐┌┐┌  ┬  ┌─┐┬┌┐┌┌┬┐  ┌┬┐┌─┐┬─┐┌─┐
-  │││├─┤├┤ ├┬┘├┤   │  ├─┤│││  │  ├┤ ││││ ││  ││││ │├┬┘├┤
-  └┴┘┴ ┴└─┘┴└─└─┘  └─┘┴ ┴┘└┘  ┴  └  ┴┘└┘─┴┘  ┴ ┴└─┘┴└─└─┘
-            ╦╔╗╔╔═╗╔═╗╦═╗╔╦╗╔═╗╔╦╗╦╔═╗╔╗╔┌─┐
-            ║║║║╠╣ ║ ║╠╦╝║║║╠═╣ ║ ║║ ║║║║ ┌┘
-            ╩╝╚╝╚  ╚═╝╩╚═╩ ╩╩ ╩ ╩ ╩╚═╝╝╚╝ o
      WHERE CAN I FIND MORE INFORMATION?
 
-Pretty much all you need to know is either here or on the AnimationTester page, but you can write me if you want to! You can reach me @hherebus on Twitter, or by writing me a quick email at support@immortalhydra.com
-
-ASCII titles realized with http://patorjk.com/software/taag/ ("ASCII Shadow" and "Calvin S" styles).
-Icons by Icons8 https://icons8.com/
+Pretty much all you need to know is either here or on the AnimationTester page, but you can write me if you want to! You can reach me @hherebus on Twitter, or by writing me a quick email at support@immortalhydra.com.
