@@ -64,6 +64,13 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 #endif
 
+
+        public static void StopAnimation(Animator animator)
+        {
+            animator.Stop();
+        }
+
+
         public static Dictionary <int, RuntimeAnimatorController> BuildControllersBackup(List<Animator> animators)
         {
             var backup = new Dictionary<int, RuntimeAnimatorController>();

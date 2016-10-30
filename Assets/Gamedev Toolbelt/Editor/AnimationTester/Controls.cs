@@ -76,8 +76,9 @@ namespace com.immortalhydra.gdtb.animationtester
 
 		private static void DrawPressedButton(Rect aRect, GUIContent aContent)
 		{
-			EditorGUI.DrawRect(aRect, Preferences.Color_Secondary);
 			var style = new GUIStyle();
+
+			EditorGUI.DrawRect(aRect, Preferences.Color_Secondary);
 
 			// Text formatting.
 			style.active.textColor = style.onActive.textColor = style.normal.textColor = style.onNormal.textColor = Preferences.Color_Primary;
