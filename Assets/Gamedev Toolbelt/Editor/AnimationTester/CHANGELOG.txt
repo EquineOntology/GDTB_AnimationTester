@@ -1,7 +1,9 @@
 ====== 1.2 ======
 
-* UX: add border to buttons.
-* Remove old icon buttons, unifying interface to text buttons for clarity.
+* FEATURE: Animators/Animations and clips can now be cycled through with Prev/Next buttons.
+* UX: added border to buttons.
+* Removed old icon buttons, unifying interface to text buttons for clarity.
+* Removed redundant Select and Refresh buttons.
 
 ====== 1.1 ======
 
