@@ -60,13 +60,20 @@ namespace com.immortalhydra.gdtb.animationtester
 			// If text buttons:
 			if(Preferences.ButtonsDisplay == ButtonsDisplayFormat.REGULAR_BUTTONS)
 			{
+				// Draw "border".
+				EditorGUI.DrawRect(aRect, Preferences.Color_Secondary);
+
+				// Draw the darker internal rect.
+				var internalRect = new Rect(aRect.x + 1, aRect.y + 1, aRect.width - 2, aRect.height - 2);
+				EditorGUI.DrawRect(internalRect, Preferences.Color_Primary);
+
 				// Text formatting.
 				style.active.textColor = style.onActive.textColor = style.normal.textColor = style.onNormal.textColor = Preferences.Color_Tertiary;
 				style.imagePosition = ImagePosition.TextOnly;
 				style.alignment = TextAnchor.MiddleCenter;
 
 				// Label inside the button.
-				EditorGUI.LabelField(aRect, aContent.text, style);
+				EditorGUI.LabelField(internalRect, aContent.text, style);
 			}
 			// If image buttons:
 			else
