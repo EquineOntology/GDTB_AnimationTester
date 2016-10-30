@@ -57,7 +57,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
             // Get existing open window or, if none exists, make a new one.
             var window = (WindowMain)EditorWindow.GetWindow (typeof (WindowMain));
-            window.SetMinSize();
+            window.minSize = new Vector2(243f, 121f);
             window.LoadSkin();
             window.LoadStyles();
 
@@ -195,16 +195,8 @@ namespace com.immortalhydra.gdtb.animationtester
 
             Rect animatablesRect;
             GUIContent animatablesContent;
-            switch (Preferences.ButtonsDisplay)
-            {
-                case ButtonsDisplayFormat.REGULAR_BUTTONS:
-                    Button_Animatables_default(out animatablesRect, out animatablesContent);
-                    break;
-				case ButtonsDisplayFormat.COOL_ICONS:
-                default:
-                    Button_Animatables_icon(out animatablesRect, out animatablesContent);
-                    break;
-            }
+
+            Button_Animatables(out animatablesRect, out animatablesContent);
 
             // Update list of animatables.
             if (Controls.Button(animatablesRect, animatablesContent))
@@ -213,27 +205,17 @@ namespace com.immortalhydra.gdtb.animationtester
             }
         }
 
-        private void Button_Animatables_default(out Rect aRect, out GUIContent aContent)
+        private void Button_Animatables(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(_popupWidth + _offset * 3, _iconSize * 1.5f  + _offset / 2 - _buttonHeight / 2, _buttonWidth, _buttonHeight);
             aContent = new GUIContent("Select", "Select this gameobject");
         }
-        private void Button_Animatables_icon(out Rect aRect, out GUIContent aContent)
-        {
-            aRect = new Rect (_popupWidth + _offset * 3,  _iconSize + _offset * 2.5f - _iconSize / 2, _iconSize, _iconSize);
-            aContent = new GUIContent(DrawingUtils.Texture_Select, "Select this gameobject");
-        }
 
 
-        private void Button_Refresh_default(out Rect aRect, out GUIContent aContent)
+        private void Button_Refresh(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(_popupWidth + _offset * 3,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth, _buttonHeight);
             aContent = new GUIContent("Refresh", "Refresh list of animations");
-        }
-        private void Button_Refresh_icon(out Rect aRect, out GUIContent aContent)
-        {
-            aRect = new Rect (_popupWidth + _offset * 3, _iconSize * 3 +_offset * 3.5f - _iconSize / 2, _iconSize, _iconSize);
-            aContent = new GUIContent(DrawingUtils.Texture_Refresh, "Refresh list of animations");
         }
 
 
@@ -242,17 +224,9 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             Rect playRect;
             GUIContent playContent;
-            switch (Preferences.ButtonsDisplay)
-            {
-                case ButtonsDisplayFormat.REGULAR_BUTTONS:
-                    Button_Play_default(out playRect, out playContent);
-                    break;
-				case ButtonsDisplayFormat.COOL_ICONS:
-                default:
-                    Button_Play_icon(out playRect, out playContent);
-                    break;
-            }
 
+
+            Button_Play(out playRect, out playContent);
             if(Controls.Button(playRect, playContent))
             {
                 if(!Application.isPlaying)
@@ -274,19 +248,12 @@ namespace com.immortalhydra.gdtb.animationtester
             }
         }
 
-        private void Button_Play_default(out Rect aRect, out GUIContent aContent)
+        private void Button_Play(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(0,0, _buttonWidth, _buttonHeight);
             aRect.x = ((_popupWidth + _offset * 3) + _buttonWidth) / 2 - _buttonWidth / 2;
             aRect.y = _iconSize * 4 + _offset * 3.5f;
             aContent = new GUIContent("Play", "Play selected clip");
-        }
-        private void Button_Play_icon(out Rect aRect, out GUIContent aContent)
-        {
-            aRect = new Rect (0, 0, _iconSize, _iconSize);
-            aRect.x = ((_popupWidth + _offset * 3) + _iconSize) / 2 - _iconSize / 2;
-            aRect.y = _iconSize * 4 + _offset * 3.5f;
-            aContent = new GUIContent(DrawingUtils.Texture_Play, "Play selected clip");
         }
 
 
@@ -295,16 +262,8 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             Rect settingsRect;
             GUIContent settingsContent;
-            switch (Preferences.ButtonsDisplay)
-            {
-                case ButtonsDisplayFormat.REGULAR_BUTTONS:
-                    Button_Settings_default(out settingsRect, out settingsContent);
-                    break;
-				case ButtonsDisplayFormat.COOL_ICONS:
-                default:
-                    Button_Settings_icon(out settingsRect, out settingsContent);
-                    break;
-            }
+
+            Button_Settings(out settingsRect, out settingsContent);
 
             if(Controls.Button(settingsRect, settingsContent))
             {
@@ -316,16 +275,10 @@ namespace com.immortalhydra.gdtb.animationtester
             }
         }
 
-        private void Button_Settings_default(out Rect aRect, out GUIContent aContent)
+        private void Button_Settings(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(_offset, position.height - _buttonHeight - _offset, _buttonWidth, _buttonHeight);
             aContent = new GUIContent("Settings", "Open Settings");
-        }
-
-        private void Button_Settings_icon(out Rect aRect, out GUIContent aContent)
-        {
-            aRect = new Rect(_offset, position.height - _iconSize - _offset, _iconSize, _iconSize);
-            aContent = new GUIContent(DrawingUtils.Texture_Settings, "Open Settings");
         }
 
 
@@ -378,16 +331,8 @@ namespace com.immortalhydra.gdtb.animationtester
 
             Rect refreshRect;
             GUIContent refreshContent;
-            switch (Preferences.ButtonsDisplay)
-            {
-                case ButtonsDisplayFormat.REGULAR_BUTTONS:
-                    Button_Refresh_default(out refreshRect, out refreshContent);
-                    break;
-				case ButtonsDisplayFormat.COOL_ICONS:
-                default:
-                    Button_Refresh_icon(out refreshRect, out refreshContent);
-                    break;
-            }
+
+            Button_Refresh(out refreshRect, out refreshContent);
 
             // Refresh list from the animation controller, but only if in play mode (otherwise throws exception).
             if (Controls.Button(refreshRect, refreshContent))
@@ -444,16 +389,8 @@ namespace com.immortalhydra.gdtb.animationtester
 
             Rect refreshRect;
             GUIContent refreshContent;
-            switch (Preferences.ButtonsDisplay)
-            {
-                case ButtonsDisplayFormat.REGULAR_BUTTONS:
-                    Button_Refresh_default(out refreshRect, out refreshContent);
-                    break;
-				case ButtonsDisplayFormat.COOL_ICONS:
-                default:
-                    Button_Refresh_icon(out refreshRect, out refreshContent);
-                    break;
-            }
+
+            Button_Refresh(out refreshRect, out refreshContent);
 
             // Refresh list from the animation controller, but only if in play mode (otherwise throws exception).
             if (Controls.Button(refreshRect, refreshContent))
@@ -536,21 +473,6 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Set the minSize of the window based on preferences.
-        public void SetMinSize()
-        {
-            var window = GetWindow(typeof(WindowMain)) as WindowMain;
-            if (Preferences.ButtonsDisplay == ButtonsDisplayFormat.COOL_ICONS)
-            {
-                window.minSize = new Vector2(190f, 123f);
-            }
-            else
-            {
-                window.minSize = new Vector2(243f, 121f);
-            }
-        }
-
-
         // Unfortunately, IMGUI is not really responsive to events, e.g. changing the style of a button
         // (like when you press it) shows some pretty abysmal delays in the GUI, the button will light up
         // and down too late after the actual click. We force the UI to update more often instead.
@@ -562,7 +484,6 @@ namespace com.immortalhydra.gdtb.animationtester
 
         public void OnDestroy()
         {
-            Resources.UnloadUnusedAssets();
             CloseOtherWindows();
         }
 

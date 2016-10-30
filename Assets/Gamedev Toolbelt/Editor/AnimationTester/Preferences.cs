@@ -6,17 +6,6 @@ namespace com.immortalhydra.gdtb.animationtester
     public class Preferences
     {
         #region fields
-        // Buttons displayed as normal buttons or smaller icons.
-        private const string PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY = "GDTB_AnimationTester_ButtonDisplay";
-        private static ButtonsDisplayFormat _buttonsDisplay = ButtonsDisplayFormat.COOL_ICONS;
-        private static int _buttonsDisplay_default = 1;
-        private static ButtonsDisplayFormat _oldDisplayFormat;
-        public static ButtonsDisplayFormat ButtonsDisplay
-        {
-            get { return _buttonsDisplay; }
-        }
-        private static string[] _buttonsFormatsString = { "Cool icons", "Regular buttons" };
-
         // Welcome window.
         private const string PREFS_ANIMATIONTESTER_WELCOME = "GDTB_AnimationTester_Welcome";
         private static bool _showWelcome = true;
@@ -26,17 +15,7 @@ namespace com.immortalhydra.gdtb.animationtester
             get { return _showWelcome; }
         }
 
-        #region Colors
-        // Style of icons (light or dark).
-        private const string PREFS_ANIMATIONTESTER_ICON_STYLE = "GDTB_AnimationTester_IconStyle";
-        private static IconStyle _iconStyle = IconStyle.LIGHT;
-        private static int _iconStyle_default = 1;
-        private static IconStyle _oldIconStyle;
-        public static IconStyle IconStyle
-        {
-            get { return _iconStyle; }
-        }
-        private static string[] arr_iconStyle = { "Dark", "Light" };
+        #region colors
 
         // Primary color.
         private const string PREFS_ANIMATIONTESTER_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
@@ -97,45 +76,21 @@ namespace com.immortalhydra.gdtb.animationtester
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, false, false);
             EditorGUILayout.LabelField("General settings", EditorStyles.boldLabel);
             _showWelcome = EditorGUILayout.Toggle("Show Welcome window", _showWelcome);
+            _newShortcut = DrawShortcutSelector();
             GUILayout.Space(20);
             EditorGUILayout.LabelField("UI", EditorStyles.boldLabel);
-            _buttonsDisplay = (ButtonsDisplayFormat)EditorGUILayout.Popup("Button style", System.Convert.ToInt16(_buttonsDisplay), _buttonsFormatsString);
-            _iconStyle = (IconStyle)EditorGUILayout.Popup("Icon style", (int)_iconStyle, arr_iconStyle);
-            EditorGUILayout.Separator();
             _primary = EditorGUILayout.ColorField("Background", _primary);
             _secondary = EditorGUILayout.ColorField("Bold text and button color", _secondary);
             _tertiary = EditorGUILayout.ColorField("Text color", _tertiary);
             EditorGUILayout.Separator();
             DrawThemeButtons();
             GUILayout.Space(20);
-            _newShortcut = DrawShortcutSelector();
-            GUILayout.Space(20);
             DrawResetButton();
             EditorGUILayout.EndScrollView();
 
             if (GUI.changed)
             {
-                // If buttons display changed we want to open and close the window, so that the new minsize is applied.
-                var shouldReopenWindowMain = false;
-                if (_buttonsDisplay != _oldDisplayFormat || _iconStyle != _oldIconStyle)
-                {
-                    _oldDisplayFormat = _buttonsDisplay;
-                    _oldIconStyle = _iconStyle;
-                    shouldReopenWindowMain = true;
-                }
-
                 SetPrefValues();
-
-                if (shouldReopenWindowMain)
-                {
-                    if (WindowMain.IsOpen)
-                    {
-                        EditorWindow.GetWindow(typeof(WindowMain)).Close();
-                        var window = EditorWindow.GetWindow(typeof(WindowMain)) as WindowMain;
-                        window.SetMinSize();
-                        window.Show();
-                    }
-                }
             }
         }
 
@@ -152,8 +107,6 @@ namespace com.immortalhydra.gdtb.animationtester
         private static void SetPrefValues()
         {
             SetWelcome(_showWelcome);
-            EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, System.Convert.ToInt16(_buttonsDisplay));
-            SetIconStyle();
             SetColorPrefs();
             SetShortcutPrefs();
         }
@@ -163,14 +116,6 @@ namespace com.immortalhydra.gdtb.animationtester
         public static void SetWelcome(bool val)
         {
             EditorPrefs.SetBool(PREFS_ANIMATIONTESTER_WELCOME, val);
-        }
-
-
-        /// Set the value of IconStyle.
-        private static void SetIconStyle()
-        {
-            EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_ICON_STYLE, (int)_iconStyle);
-            DrawingUtils.LoadTextures(_iconStyle);
         }
 
 
@@ -204,9 +149,6 @@ namespace com.immortalhydra.gdtb.animationtester
                     SetColorPrefs();
                     GetColorPrefs();
 
-                    _iconStyle = IconStyle.LIGHT;
-                    SetIconStyle();
-                    GetIconStyle();
                     ReloadSkins();
 
                     RepaintOpenWindows();
@@ -223,9 +165,6 @@ namespace com.immortalhydra.gdtb.animationtester
                     SetColorPrefs();
                     GetColorPrefs();
 
-                    _iconStyle = IconStyle.DARK;
-                    SetIconStyle();
-                    GetIconStyle();
                     ReloadSkins();
 
                     RepaintOpenWindows();
@@ -253,21 +192,9 @@ namespace com.immortalhydra.gdtb.animationtester
         public static void GetAllPrefValues()
         {
             _showWelcome = GetPrefValue(PREFS_ANIMATIONTESTER_WELCOME, _showWelcome_default);
-            _buttonsDisplay = (ButtonsDisplayFormat)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, _buttonsDisplay_default); // Buttons display.
-            _oldDisplayFormat = _buttonsDisplay;
-            GetIconStyle();
             GetColorPrefs();
             _shortcut = GetPrefValue(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut_default); // Shortcut.
             ParseShortcutValues();
-        }
-
-
-        /// Get IconStyle.
-        private static void GetIconStyle()
-        {
-            _iconStyle = (IconStyle)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_ICON_STYLE, _iconStyle_default); // Icon style.
-            _oldIconStyle = _iconStyle;
-            DrawingUtils.LoadTextures(_iconStyle);
         }
 
 
@@ -284,7 +211,6 @@ namespace com.immortalhydra.gdtb.animationtester
                 _primary = RGBA.GetNormalizedColor(_primary_default);
                 _secondary = RGBA.GetNormalizedColor(_secondary_default);
                 _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
-                _iconStyle = (IconStyle)_iconStyle_default;
             }
         }
 
@@ -430,11 +356,9 @@ namespace com.immortalhydra.gdtb.animationtester
         {
 
             _showWelcome = _showWelcome_default;
-            _buttonsDisplay = (ButtonsDisplayFormat)_buttonsDisplay_default;
             _primary = RGBA.GetNormalizedColor(_primary_default);
             _secondary = RGBA.GetNormalizedColor(_secondary_default);
             _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
-            _iconStyle = (IconStyle)_iconStyle_default;
             _shortcut = _shortcut_default;
 
             SetPrefValues();
@@ -450,6 +374,12 @@ namespace com.immortalhydra.gdtb.animationtester
                 var window = EditorWindow.GetWindow(typeof(WindowMain)) as WindowMain;
                 window.LoadStyles();
             }
+
+            if (WindowWelcome.IsOpen)
+            {
+                var window = EditorWindow.GetWindow(typeof(WindowWelcome)) as WindowWelcome;
+                window.LoadStyles();
+            }
         }
 
 
@@ -461,19 +391,5 @@ namespace com.immortalhydra.gdtb.animationtester
                 EditorWindow.GetWindow(typeof(WindowMain)).Repaint();
             }
         }
-    }
-
-
-    public enum ButtonsDisplayFormat
-    {
-        COOL_ICONS,
-        REGULAR_BUTTONS
-    }
-
-
-    public enum IconStyle
-    {
-        DARK,
-        LIGHT
     }
 }

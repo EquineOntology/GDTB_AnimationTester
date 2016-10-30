@@ -57,32 +57,20 @@ namespace com.immortalhydra.gdtb.animationtester
 		{
 			var style = new GUIStyle();
 
-			// If text buttons:
-			if(Preferences.ButtonsDisplay == ButtonsDisplayFormat.REGULAR_BUTTONS)
-			{
-				// Draw "border".
-				EditorGUI.DrawRect(aRect, Preferences.Color_Secondary);
+			// Draw "border".
+			EditorGUI.DrawRect(aRect, Preferences.Color_Secondary);
 
-				// Draw the darker internal rect.
-				var internalRect = new Rect(aRect.x + 1, aRect.y + 1, aRect.width - 2, aRect.height - 2);
-				EditorGUI.DrawRect(internalRect, Preferences.Color_Primary);
+			// Draw the darker internal rect.
+			var internalRect = new Rect(aRect.x + 1, aRect.y + 1, aRect.width - 2, aRect.height - 2);
+			EditorGUI.DrawRect(internalRect, Preferences.Color_Primary);
 
-				// Text formatting.
-				style.active.textColor = style.onActive.textColor = style.normal.textColor = style.onNormal.textColor = Preferences.Color_Tertiary;
-				style.imagePosition = ImagePosition.TextOnly;
-				style.alignment = TextAnchor.MiddleCenter;
+			// Text formatting.
+			style.active.textColor = style.onActive.textColor = style.normal.textColor = style.onNormal.textColor = Preferences.Color_Tertiary;
+			style.imagePosition = ImagePosition.TextOnly;
+			style.alignment = TextAnchor.MiddleCenter;
 
-				// Label inside the button.
-				EditorGUI.LabelField(internalRect, aContent.text, style);
-			}
-			// If image buttons:
-			else
-			{
-				style.imagePosition = ImagePosition.ImageOnly;
-
-				// Icon inside the button.
-				GUI.DrawTexture(aRect, aContent.image);
-			}
+			// Label inside the button.
+			EditorGUI.LabelField(internalRect, aContent.text, style);
 		}
 
 
@@ -90,22 +78,13 @@ namespace com.immortalhydra.gdtb.animationtester
 		{
 			EditorGUI.DrawRect(aRect, Preferences.Color_Secondary);
 			var style = new GUIStyle();
-			// If text buttons:
-			if(Preferences.ButtonsDisplay == ButtonsDisplayFormat.REGULAR_BUTTONS)
-			{
-				// Text formatting.
-				style.active.textColor = style.onActive.textColor = style.normal.textColor = style.onNormal.textColor = Preferences.Color_Primary;
-				style.imagePosition = ImagePosition.TextOnly;
-				style.alignment = TextAnchor.MiddleCenter;
 
-				EditorGUI.LabelField(aRect, aContent.text, style);
-			}
-			// If image buttons:
-			else
-			{
-				style.imagePosition = ImagePosition.ImageOnly;
-				GUI.DrawTexture(aRect, aContent.image);
-			}
+			// Text formatting.
+			style.active.textColor = style.onActive.textColor = style.normal.textColor = style.onNormal.textColor = Preferences.Color_Primary;
+			style.imagePosition = ImagePosition.TextOnly;
+			style.alignment = TextAnchor.MiddleCenter;
+
+			EditorGUI.LabelField(aRect, aContent.text, style);
 		}
 	}
 }

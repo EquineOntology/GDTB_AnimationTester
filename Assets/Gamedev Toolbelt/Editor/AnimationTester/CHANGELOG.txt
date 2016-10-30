@@ -1,6 +1,7 @@
 ====== 1.2 ======
 
 * UX: add border to buttons.
+* Remove old icon buttons, unifying interface to text buttons for clarity.
 
 ====== 1.1 ======
 

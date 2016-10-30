@@ -21,7 +21,7 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             // Get existing open window or if none, make a new one.
             var window = (WindowWelcome)EditorWindow.GetWindow(typeof(WindowWelcome));
-            window.SetMinSize();
+            window.minSize = new Vector2(360f, 300f);
             window.LoadSkin();
             window.Show();
         }
@@ -38,16 +38,9 @@ namespace com.immortalhydra.gdtb.animationtester
             Instance = this;
 
             LoadSkin();
-            LoadStyle();
+            LoadStyles();
 
             _welcomeValue = Preferences.ShowWelcome;
-        }
-
-
-        /// Called when the window is closed.
-        private void OnDestroy()
-        {
-            Resources.UnloadUnusedAssets();
         }
 
 
@@ -122,7 +115,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
 
         /// Load label styles.
-        public void LoadStyle()
+        public void LoadStyles()
         {
             _wordWrappedColoredLabel = _skin.GetStyle("GDTB_AnimationTester_wordWrappedColoredLabel");
             _wordWrappedColoredLabel.active.textColor = Preferences.Color_Tertiary;
@@ -134,14 +127,6 @@ namespace com.immortalhydra.gdtb.animationtester
             _headerLabel.active.textColor = Preferences.Color_Secondary;
             _headerLabel.normal.textColor = Preferences.Color_Secondary;
             _headerLabel.fontStyle = FontStyle.Bold;
-        }
-
-
-        /// Set the minSize of the window based on preferences.
-        public void SetMinSize()
-        {
-            var window = GetWindow(typeof(WindowWelcome)) as WindowWelcome;
-            window.minSize = new Vector2(360f, 300f);
         }
     }
 }
