@@ -6,6 +6,8 @@ namespace com.immortalhydra.gdtb.animationtester
     public static class DrawingUtils
     {
 
+#region METHODS
+
         /// Draw the button, not pressed.
         public static void DrawButton(Rect aRect, string aText, GUIStyle aStyle)
         {
@@ -47,5 +49,8 @@ namespace com.immortalhydra.gdtb.animationtester
                 }
             }
         }
+
+#endregion
+
     }
 }

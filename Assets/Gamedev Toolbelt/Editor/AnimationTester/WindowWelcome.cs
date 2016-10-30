@@ -6,6 +6,9 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public class WindowWelcome : EditorWindow
     {
+
+#region FIELDS AND PROPERTIES
+
         public static WindowWelcome Instance { get; private set; }
         public static bool IsOpen {
             get { return Instance != null; }
@@ -16,16 +19,10 @@ namespace com.immortalhydra.gdtb.animationtester
         private bool _welcomeValue;
         private float _usableWidth = 0;
 
+#endregion
 
-        public static void Init()
-        {
-            // Get existing open window or if none, make a new one.
-            var window = (WindowWelcome)EditorWindow.GetWindow(typeof(WindowWelcome));
-            window.minSize = new Vector2(360f, 300f);
-            window.LoadSkin();
-            window.Show();
-        }
 
+#region MONOBEHAVIOUR METHODS
 
         public void OnEnable()
         {
@@ -88,22 +85,18 @@ namespace com.immortalhydra.gdtb.animationtester
             DrawToggle();
         }
 
+#endregion
 
-        /// Draw the background texture.
-        private void DrawWindowBackground()
+
+#region METHODS
+
+        public static void Init()
         {
-            EditorGUI.DrawRect(new Rect(0, 0, position.width, position.height), Preferences.Color_Primary);
-        }
-
-
-        private void DrawToggle()
-        {
-            var rect = new Rect(_offset * 2, position.height - 20 - _offset, position.width, 20);
-            _welcomeValue = EditorGUI.ToggleLeft(rect, " Show this window every time AnimationTester is opened", _welcomeValue, _wordWrappedColoredLabel);
-            if (_welcomeValue != Preferences.ShowWelcome)
-            {
-                Preferences.SetWelcome(_welcomeValue);
-            }
+            // Get existing open window or if none, make a new one.
+            var window = (WindowWelcome)EditorWindow.GetWindow(typeof(WindowWelcome));
+            window.minSize = new Vector2(360f, 300f);
+            window.LoadSkin();
+            window.Show();
         }
 
 
@@ -128,5 +121,28 @@ namespace com.immortalhydra.gdtb.animationtester
             _headerLabel.normal.textColor = Preferences.Color_Secondary;
             _headerLabel.fontStyle = FontStyle.Bold;
         }
+
+
+
+
+        /// Draw the background texture.
+        private void DrawWindowBackground()
+        {
+            EditorGUI.DrawRect(new Rect(0, 0, position.width, position.height), Preferences.Color_Primary);
+        }
+
+
+        private void DrawToggle()
+        {
+            var rect = new Rect(_offset * 2, position.height - 20 - _offset, position.width, 20);
+            _welcomeValue = EditorGUI.ToggleLeft(rect, " Show this window every time AnimationTester is opened", _welcomeValue, _wordWrappedColoredLabel);
+            if (_welcomeValue != Preferences.ShowWelcome)
+            {
+                Preferences.SetWelcome(_welcomeValue);
+            }
+        }
+
+#endregion
+
     }
 }

@@ -6,6 +6,9 @@ namespace com.immortalhydra.gdtb.animationtester
 {
 	public static class Controls
 	{
+
+#region METHODS
+
 		public static bool Button(Rect controlRect, GUIContent controlContent)
 		{
 			var shouldFire = false;
@@ -50,9 +53,6 @@ namespace com.immortalhydra.gdtb.animationtester
 		}
 
 
-		//public static int SelectionGrid()
-
-
 		private static void DrawUnpressedButton(Rect aRect, GUIContent aContent)
 		{
 			var style = new GUIStyle();
@@ -76,6 +76,8 @@ namespace com.immortalhydra.gdtb.animationtester
 		}
 
 
+
+
 		private static void DrawPressedButton(Rect aRect, GUIContent aContent)
 		{
 			var style = new GUIStyle();
@@ -91,5 +93,8 @@ namespace com.immortalhydra.gdtb.animationtester
 			textRect.y--;
 			EditorGUI.LabelField(textRect, aContent.text, style);
 		}
+
+#endregion
+
 	}
 }

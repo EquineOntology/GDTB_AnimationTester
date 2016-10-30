@@ -5,15 +5,12 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public static class AnimationHandler
     {
+
+#region METHODS
+
         public static void PlayAnimation (Animation animation, AnimationClip clip)
         {
             animation.Play(clip.name);
-        }
-
-
-        public static void StopAnimation(Animation animation)
-        {
-            animation.Stop();
         }
 
 
@@ -31,5 +28,8 @@ namespace com.immortalhydra.gdtb.animationtester
             }
             return gos;
         }
+
+#endregion
+
     }
 }

@@ -6,6 +6,9 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public static class AnimationClipHandler
     {
+
+#region METHODS
+
         public static string[] GetNames(AnimationClip[] animationClips)
         {
             var nameHolder = new string[animationClips.Length];
@@ -28,7 +31,6 @@ namespace com.immortalhydra.gdtb.animationtester
             {
                 nameHolder[animators.Count + j] = animations[j].gameObject.name;
             }
-
             return nameHolder;
         }
 
@@ -37,7 +39,6 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             var clips = UnityEditor.AnimationUtility.GetAnimationClips(animator.gameObject);
             var names = GetNames(clips);
-
             return names;
         }
 
@@ -59,7 +60,6 @@ namespace com.immortalhydra.gdtb.animationtester
                 {
                     clipNames = new string[] { "" };
                 }
-
                 backup.Add(key, clipNames);
             }
 
@@ -86,8 +86,10 @@ namespace com.immortalhydra.gdtb.animationtester
                 }
                 backup.Add(key, namesArray);
             }
-
             return backup;
         }
+
+#endregion
+
     }
 }

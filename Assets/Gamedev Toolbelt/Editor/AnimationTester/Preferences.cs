@@ -5,7 +5,7 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public class Preferences
     {
-        #region fields
+#region FIELDS AND PROPERTIES
         // Welcome window.
         private const string PREFS_ANIMATIONTESTER_WELCOME = "GDTB_AnimationTester_Welcome";
         private static bool _showWelcome = true;
@@ -14,8 +14,6 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             get { return _showWelcome; }
         }
-
-        #region colors
 
         // Primary color.
         private const string PREFS_ANIMATIONTESTER_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
@@ -49,7 +47,6 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             get { return _tertiary; }
         }
-        #endregion
 
         // Custom shortcut
         private const string PREFS_ANIMATIONTESTER_SHORTCUT = "GDTB_AnimationTester_Shortcut";
@@ -64,10 +61,13 @@ namespace com.immortalhydra.gdtb.animationtester
         private static int _mainShortcutKeyIndex = 0;
         // Want absolute control over values.
         private static string[] _shortcutKeys = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "LEFT", "RIGHT", "UP", "DOWN", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "HOME", "END", "PGUP", "PGDN" };
-        #endregion fields
 
 
         private static Vector2 _scrollPosition = new Vector2(-1, 0);
+#endregion
+
+#region METHODS
+
         [PreferenceItem("AnimationTester")]
         public static void PreferencesGUI()
         {
@@ -103,15 +103,6 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Set the value of all preferences.
-        private static void SetPrefValues()
-        {
-            SetWelcome(_showWelcome);
-            SetColorPrefs();
-            SetShortcutPrefs();
-        }
-
-
         /// Set the value of ShowWelcome.
         public static void SetWelcome(bool val)
         {
@@ -119,12 +110,51 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Set the value of a Color preference.
-        private static void SetColorPrefs()
+        /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
+        public static void GetAllPrefValues()
         {
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.ColorToString(_primary));
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
+            _showWelcome = GetPrefValue(PREFS_ANIMATIONTESTER_WELCOME, _showWelcome_default);
+            GetColorPrefs();
+            _shortcut = GetPrefValue(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut_default); // Shortcut.
+            ParseShortcutValues();
+        }
+
+
+
+
+        /// Draw the shortcut selector.
+        private static string DrawShortcutSelector()
+        {
+            // Differentiate between Mac Editor (CMD) and Win editor (CTRL).
+            var platformKey = Application.platform == RuntimePlatform.OSXEditor ? "CMD" : "CTRL";
+            var shortcut = "";
+            ParseShortcutValues();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Shortcut ");
+            GUILayout.Space(20);
+            _modifierKeys[0] = GUILayout.Toggle(_modifierKeys[0], platformKey, EditorStyles.miniButton, GUILayout.Width(50));
+            _modifierKeys[1] = GUILayout.Toggle(_modifierKeys[1], "ALT", EditorStyles.miniButton, GUILayout.Width(40));
+            _modifierKeys[2] = GUILayout.Toggle(_modifierKeys[2], "SHIFT", EditorStyles.miniButton, GUILayout.Width(60));
+            _mainShortcutKeyIndex = EditorGUILayout.Popup(_mainShortcutKeyIndex, _shortcutKeys, GUILayout.Width(60));
+            GUILayout.EndHorizontal();
+
+            // Generate shortcut string.
+            if (_modifierKeys[0] == true)
+            {
+                shortcut += "%|";
+            }
+            if (_modifierKeys[1] == true)
+            {
+                shortcut += "&|";
+            }
+            if (_modifierKeys[2] == true)
+            {
+                shortcut += "#|";
+            }
+            shortcut += _shortcutKeys[_mainShortcutKeyIndex];
+
+            return shortcut;
         }
 
 
@@ -175,6 +205,44 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Draw reset button.
+        private static void DrawResetButton()
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Reset preferences", GUILayout.Width(120)))
+            {
+                ResetPrefsToDefault();
+            }
+            EditorGUILayout.Space();
+            EditorGUILayout.EndHorizontal();
+        }
+
+
+        /// Reset all preferences to default.
+        private static void ResetPrefsToDefault()
+        {
+
+            _showWelcome = _showWelcome_default;
+            _primary = RGBA.GetNormalizedColor(_primary_default);
+            _secondary = RGBA.GetNormalizedColor(_secondary_default);
+            _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
+            _shortcut = _shortcut_default;
+
+            SetPrefValues();
+            GetAllPrefValues();
+        }
+
+
+        /// Set the value of all preferences.
+        private static void SetPrefValues()
+        {
+            SetWelcome(_showWelcome);
+            SetColorPrefs();
+            SetShortcutPrefs();
+        }
+
+
         /// Set the value of the shortcut preference.
         private static void SetShortcutPrefs()
         {
@@ -188,13 +256,12 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
-        public static void GetAllPrefValues()
+        /// Set the value of a Color preference.
+        private static void SetColorPrefs()
         {
-            _showWelcome = GetPrefValue(PREFS_ANIMATIONTESTER_WELCOME, _showWelcome_default);
-            GetColorPrefs();
-            _shortcut = GetPrefValue(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut_default); // Shortcut.
-            ParseShortcutValues();
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.ColorToString(_primary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
         }
 
 
@@ -269,42 +336,6 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Draw the shortcut selector.
-        private static string DrawShortcutSelector()
-        {
-            // Differentiate between Mac Editor (CMD) and Win editor (CTRL).
-            var platformKey = Application.platform == RuntimePlatform.OSXEditor ? "CMD" : "CTRL";
-            var shortcut = "";
-            ParseShortcutValues();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Shortcut ");
-            GUILayout.Space(20);
-            _modifierKeys[0] = GUILayout.Toggle(_modifierKeys[0], platformKey, EditorStyles.miniButton, GUILayout.Width(50));
-            _modifierKeys[1] = GUILayout.Toggle(_modifierKeys[1], "ALT", EditorStyles.miniButton, GUILayout.Width(40));
-            _modifierKeys[2] = GUILayout.Toggle(_modifierKeys[2], "SHIFT", EditorStyles.miniButton, GUILayout.Width(60));
-            _mainShortcutKeyIndex = EditorGUILayout.Popup(_mainShortcutKeyIndex, _shortcutKeys, GUILayout.Width(60));
-            GUILayout.EndHorizontal();
-
-            // Generate shortcut string.
-            if (_modifierKeys[0] == true)
-            {
-                shortcut += "%|";
-            }
-            if (_modifierKeys[1] == true)
-            {
-                shortcut += "&|";
-            }
-            if (_modifierKeys[2] == true)
-            {
-                shortcut += "#|";
-            }
-            shortcut += _shortcutKeys[_mainShortcutKeyIndex];
-
-            return shortcut;
-        }
-
-
         /// Get usable values from the shortcut string pref.
         private static void ParseShortcutValues()
         {
@@ -337,35 +368,6 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Draw reset button.
-        private static void DrawResetButton()
-        {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.Space();
-            if (GUILayout.Button("Reset preferences", GUILayout.Width(120)))
-            {
-                ResetPrefsToDefault();
-            }
-            EditorGUILayout.Space();
-            EditorGUILayout.EndHorizontal();
-        }
-
-
-        /// Reset all preferences to default.
-        private static void ResetPrefsToDefault()
-        {
-
-            _showWelcome = _showWelcome_default;
-            _primary = RGBA.GetNormalizedColor(_primary_default);
-            _secondary = RGBA.GetNormalizedColor(_secondary_default);
-            _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
-            _shortcut = _shortcut_default;
-
-            SetPrefValues();
-            GetAllPrefValues();
-        }
-
-
         /// Reload skins of open windows.
         private static void ReloadSkins()
         {
@@ -391,5 +393,8 @@ namespace com.immortalhydra.gdtb.animationtester
                 EditorWindow.GetWindow(typeof(WindowMain)).Repaint();
             }
         }
+
+#endregion
+
     }
 }

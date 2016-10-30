@@ -9,6 +9,9 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public static class AnimatorHandler
     {
+
+#region METHODS
+
         public static List<Animator> GetObjectsWithAnimator()
         {
             var allObjectsInScene = GameObject.FindObjectsOfType<GameObject>();
@@ -25,7 +28,21 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-#if UNITY_5_4_OR_NEWER
+        public static Dictionary <int, RuntimeAnimatorController> BuildControllersBackup(List<Animator> animators)
+        {
+            var backup = new Dictionary<int, RuntimeAnimatorController>();
+
+            foreach(var x in animators)
+            {
+                var key = x.GetInstanceID();
+                var controller = x.runtimeAnimatorController;
+                backup.Add(key, controller);
+            }
+            return backup;
+        }
+
+
+    #if UNITY_5_4_OR_NEWER
 
         public static void PlayAnimation (Animator animator, AnimationClip clip)
         {
@@ -33,7 +50,7 @@ namespace com.immortalhydra.gdtb.animationtester
             animator.Play(playableClip);
         }
 
-#else
+    #else
 
         public static void PlayAnimation(Animator animator, AnimationClip clip)
         {
@@ -42,6 +59,7 @@ namespace com.immortalhydra.gdtb.animationtester
             animator.runtimeAnimatorController = controller;
             animator.Play(clip.name);
         }
+
 
 
         private static AnimatorController CreateControllerFromClip(AnimationClip clip)
@@ -57,31 +75,14 @@ namespace com.immortalhydra.gdtb.animationtester
             return controller;
         }
 
-
         private static void CloneParameters(AnimatorController controller, Animator animator)
         {
             controller.parameters = animator.parameters;
         }
-#endif
 
+    #endif
 
-        public static void StopAnimation(Animator animator)
-        {
-            animator.Stop();
-        }
+#endregion
 
-
-        public static Dictionary <int, RuntimeAnimatorController> BuildControllersBackup(List<Animator> animators)
-        {
-            var backup = new Dictionary<int, RuntimeAnimatorController>();
-
-            foreach(var x in animators)
-            {
-                var key = x.GetInstanceID();
-                var controller = x.runtimeAnimatorController;
-                backup.Add(key, controller);
-            }
-            return backup;
-        }
     }
 }
