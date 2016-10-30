@@ -161,7 +161,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
 
 
-        [MenuItem("Window/Gamedev Toolbelt/AnimationTester/Open AnimationTester %t")]
+        [MenuItem("Window/Gamedev Toolbelt/AnimationTester/Open AnimationTester %t", false, 1)]
         private static void Init()
         {
             // If AnimationTester has not been initialized, or EditorPrefs have been lost for some reason, reset them to default.
