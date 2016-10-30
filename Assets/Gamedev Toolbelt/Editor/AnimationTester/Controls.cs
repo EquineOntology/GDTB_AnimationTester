@@ -70,7 +70,9 @@ namespace com.immortalhydra.gdtb.animationtester
 			style.alignment = TextAnchor.MiddleCenter;
 
 			// Label inside the button.
-			EditorGUI.LabelField(internalRect, aContent.text, style);
+			var textRect = internalRect;
+			textRect.y--;
+			EditorGUI.LabelField(textRect, aContent.text, style);
 		}
 
 
@@ -85,7 +87,9 @@ namespace com.immortalhydra.gdtb.animationtester
 			style.imagePosition = ImagePosition.TextOnly;
 			style.alignment = TextAnchor.MiddleCenter;
 
-			EditorGUI.LabelField(aRect, aContent.text, style);
+			var textRect = aRect;
+			textRect.y--;
+			EditorGUI.LabelField(textRect, aContent.text, style);
 		}
 	}
 }
