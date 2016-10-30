@@ -11,6 +11,12 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        public static void StopAnimation(Animation animation)
+        {
+            animation.Stop();
+        }
+
+
         public static List<Animation> GetObjectsWithAnimation()
         {
             var allObjectsInScene = GameObject.FindObjectsOfType<GameObject>();
