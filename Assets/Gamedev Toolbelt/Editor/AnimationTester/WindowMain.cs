@@ -57,7 +57,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
             // Get existing open window or, if none exists, make a new one.
             var window = (WindowMain)EditorWindow.GetWindow (typeof (WindowMain));
-            window.minSize = new Vector2(243f, 121f);
+            window.minSize = new Vector2(270f, 150f);
             window.LoadSkin();
             window.LoadStyles();
 
@@ -293,7 +293,7 @@ namespace com.immortalhydra.gdtb.animationtester
         private void SetupButton_Play(out Rect aRect, out GUIContent aContent)
         {
             aRect = new Rect(0,0, _buttonWidth, _buttonHeight);
-            aRect.x = ((_popupWidth + _offset * 3) + _buttonWidth) / 2 - _buttonWidth / 2;
+            aRect.x = position.width / 2 - _buttonWidth / 2;
             aRect.y = _iconSize * 4 + _offset * 3.5f;
             aContent = new GUIContent("Play", "Play selected clip");
         }
