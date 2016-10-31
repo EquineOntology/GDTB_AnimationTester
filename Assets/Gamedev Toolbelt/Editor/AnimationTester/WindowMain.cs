@@ -572,6 +572,11 @@ namespace com.immortalhydra.gdtb.animationtester
             {
                 EditorWindow.GetWindow(typeof(WindowWelcome)).Close();
             }
+
+            if (WindowHelp.IsOpen)
+            {
+                EditorWindow.GetWindow(typeof(WindowHelp)).Close();
+            }
         }
 
 #endregion
