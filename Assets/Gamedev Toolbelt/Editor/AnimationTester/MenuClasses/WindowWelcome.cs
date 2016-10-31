@@ -9,15 +9,18 @@ namespace com.immortalhydra.gdtb.animationtester
 
 #region FIELDS AND PROPERTIES
 
-        public static WindowWelcome Instance { get; private set; }
-        public static bool IsOpen {
-            get { return Instance != null; }
-        }
+        // Fields.
         private GUISkin _skin;
         private GUIStyle _wordWrappedColoredLabel, _headerLabel;
         private int _offset = 5;
         private bool _welcomeValue;
         private float _usableWidth = 0;
+
+        // Properties.
+        public static WindowWelcome Instance { get; private set; }
+        public static bool IsOpen {
+            get { return Instance != null; }
+        }
 
 #endregion
 
@@ -44,7 +47,6 @@ namespace com.immortalhydra.gdtb.animationtester
         private void OnGUI()
         {
             _usableWidth = position.width - _offset * 2;
-            GUI.skin = _skin;
 
             DrawWindowBackground();
             var label1Content = new GUIContent("Hello! Using AnimationTester is a snap.");

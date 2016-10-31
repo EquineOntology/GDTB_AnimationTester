@@ -120,6 +120,23 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Load color preferences.
+        public static void GetColorPrefs()
+        {
+            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.GetNormalizedColor(_primary_default)); // PRIMARY color.
+            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.GetNormalizedColor(_secondary_default)); // SECONDARY color.
+            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.GetNormalizedColor(_tertiary_default)); // TERTIARY color.
+
+            // If all colors are the same, there's been some issue. Revert to initial dark scheme.
+            if(_primary == _secondary && _primary == _tertiary)
+            {
+                _primary = RGBA.GetNormalizedColor(_primary_default);
+                _secondary = RGBA.GetNormalizedColor(_secondary_default);
+                _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
+            }
+        }
+
+
 
 
         /// Draw the shortcut selector.
@@ -262,23 +279,6 @@ namespace com.immortalhydra.gdtb.animationtester
             EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.ColorToString(_primary));
             EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
             EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
-        }
-
-
-        /// Load color preferences.
-        private static void GetColorPrefs()
-        {
-            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.GetNormalizedColor(_primary_default)); // PRIMARY color.
-            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.GetNormalizedColor(_secondary_default)); // SECONDARY color.
-            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.GetNormalizedColor(_tertiary_default)); // TERTIARY color.
-
-            // If all colors are the same, there's been some issue. Revert to initial dark scheme.
-            if(_primary == _secondary && _primary == _tertiary)
-            {
-                _primary = RGBA.GetNormalizedColor(_primary_default);
-                _secondary = RGBA.GetNormalizedColor(_secondary_default);
-                _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
-            }
         }
 
 
