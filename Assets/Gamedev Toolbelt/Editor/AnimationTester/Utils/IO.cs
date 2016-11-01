@@ -6,22 +6,8 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public static class IO
     {
-        /// Get the path of a file based on the ending provided.
-        private static string GetFilePath(string aPathEnd)
-        {
-            var assetsPaths = UnityEditor.AssetDatabase.GetAllAssetPaths();
-            var filePath = "";
-            foreach (var path in assetsPaths)
-            {
-                if (path.EndsWith(aPathEnd))
-                {
-                    filePath = path;
-                    break;
-                }
-            }
-            return filePath;
-        }
 
+#region METHODS
 
         public static void OverwriteShortcut(string aShortcut)
         {
@@ -38,7 +24,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 {
                     if(line.Contains("[MenuItem"))
                     {
-                        writer.WriteLine("        [MenuItem(" + '"' + "Window/Gamedev Toolbelt/AnimationTester " + aShortcut + '"' + ")]");
+                        writer.WriteLine("        [MenuItem(" + '"' + "Window/Gamedev Toolbelt/AnimationTester/Open AnimationTester " + aShortcut + '"' + ")]");
                     }
                     else
                     {
@@ -62,5 +48,27 @@ namespace com.immortalhydra.gdtb.animationtester
                 writer.Dispose();
             }
         }
+
+
+
+
+        /// Get the path of a file based on the ending provided.
+        private static string GetFilePath(string aPathEnd)
+        {
+            var assetsPaths = UnityEditor.AssetDatabase.GetAllAssetPaths();
+            var filePath = "";
+            foreach (var path in assetsPaths)
+            {
+                if (path.EndsWith(aPathEnd))
+                {
+                    filePath = path;
+                    break;
+                }
+            }
+            return filePath;
+        }
+
+#endregion
+
     }
 }

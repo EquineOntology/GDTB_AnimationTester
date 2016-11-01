@@ -1,0 +1,16 @@
+====== 1.2 ======
+
+* FEATURE: Animators/Animations and clips can now be cycled through with Prev/Next buttons.
+* UX: added border to buttons.
+* Removed old icon buttons, unifying interface to text buttons for clarity.
+* Removed redundant Select and Refresh buttons.
+
+====== 1.1 ======
+
+ * AnimationTester now also supports gameobjects with the Animation component, not only Animators!
+ * New icons and button style!
+ * Buttons are now highlighted when hovered over.
+
+====== 1.0 ======
+
+* Initial release

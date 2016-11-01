@@ -5,30 +5,15 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public class Preferences
     {
-        #region fields
-        // Buttons displayed as normal buttons or smaller icons.
-        private const string PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY = "GDTB_AnimationTester_ButtonDisplay";
-        private static ButtonsDisplayFormat _buttonsDisplay = ButtonsDisplayFormat.COOL_ICONS;
-        private static int _buttonsDisplay_default = 1;
-        private static ButtonsDisplayFormat _oldDisplayFormat;
-        public static ButtonsDisplayFormat ButtonsDisplay
+#region FIELDS AND PROPERTIES
+        // Welcome window.
+        private const string PREFS_ANIMATIONTESTER_WELCOME = "GDTB_AnimationTester_Welcome";
+        private static bool _showWelcome = true;
+        private static bool _showWelcome_default = true;
+        public static bool ShowWelcome
         {
-            get { return _buttonsDisplay; }
+            get { return _showWelcome; }
         }
-        private static string[] _buttonsFormatsString = { "Cool icons", "Regular buttons" };
-
-
-        #region Colors
-        // Style of icons (light or dark).
-        private const string PREFS_ANIMATIONTESTER_ICON_STYLE = "GDTB_AnimationTester_IconStyle";
-        private static IconStyle _iconStyle = IconStyle.LIGHT;
-        private static int _iconStyle_default = 1;
-        private static IconStyle _oldIconStyle;
-        public static IconStyle IconStyle
-        {
-            get { return _iconStyle; }
-        }
-        private static string[] arr_iconStyle = { "Dark", "Light" };
 
         // Primary color.
         private const string PREFS_ANIMATIONTESTER_COLOR_PRIMARY = "GDTB_AnimationTester_Primary";
@@ -62,7 +47,6 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             get { return _tertiary; }
         }
-        #endregion
 
         // Custom shortcut
         private const string PREFS_ANIMATIONTESTER_SHORTCUT = "GDTB_AnimationTester_Shortcut";
@@ -77,82 +61,117 @@ namespace com.immortalhydra.gdtb.animationtester
         private static int _mainShortcutKeyIndex = 0;
         // Want absolute control over values.
         private static string[] _shortcutKeys = new string[] { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "LEFT", "RIGHT", "UP", "DOWN", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "HOME", "END", "PGUP", "PGDN" };
-        #endregion fields
 
 
         private static Vector2 _scrollPosition = new Vector2(-1, 0);
+#endregion
+
+#region METHODS
+
         [PreferenceItem("AnimationTester")]
         public static void PreferencesGUI()
         {
             GetAllPrefValues();
 
             _scrollPosition = EditorGUILayout.BeginScrollView(_scrollPosition, false, false);
+            EditorGUILayout.LabelField("General settings", EditorStyles.boldLabel);
+            _showWelcome = EditorGUILayout.Toggle("Show Welcome window", _showWelcome);
+            _newShortcut = DrawShortcutSelector();
+            GUILayout.Space(20);
             EditorGUILayout.LabelField("UI", EditorStyles.boldLabel);
-            _buttonsDisplay = (ButtonsDisplayFormat)EditorGUILayout.Popup("Button style", System.Convert.ToInt16(_buttonsDisplay), _buttonsFormatsString);
-            _iconStyle = (IconStyle)EditorGUILayout.Popup("Icon style", (int)_iconStyle, arr_iconStyle);
-            EditorGUILayout.Separator();
-            _primary = EditorGUILayout.ColorField("Background and button color", _primary);
-            _secondary = EditorGUILayout.ColorField("Accent and bold text color", _secondary);
-            _tertiary = EditorGUILayout.ColorField("Normal text color", _tertiary);
+            _primary = EditorGUILayout.ColorField("Background", _primary);
+            _secondary = EditorGUILayout.ColorField("Bold text and button color", _secondary);
+            _tertiary = EditorGUILayout.ColorField("Text color", _tertiary);
             EditorGUILayout.Separator();
             DrawThemeButtons();
-            GUILayout.Space(20);
-            _newShortcut = DrawShortcutSelector();
             GUILayout.Space(20);
             DrawResetButton();
             EditorGUILayout.EndScrollView();
 
             if (GUI.changed)
             {
-                // If buttons display changed we want to open and close the window, so that the new minsize is applied.
-                var shouldReopenWindowMain = false;
-                if (_buttonsDisplay != _oldDisplayFormat || _iconStyle != _oldIconStyle)
-                {
-                    _oldDisplayFormat = _buttonsDisplay;
-                    _oldIconStyle = _iconStyle;
-                    shouldReopenWindowMain = true;
-                }
-
                 SetPrefValues();
-
-                if (shouldReopenWindowMain)
-                {
-                    if (WindowMain.IsOpen)
-                    {
-                        EditorWindow.GetWindow(typeof(WindowMain)).Close();
-                        var window = EditorWindow.GetWindow(typeof(WindowMain)) as WindowMain;
-                        window.SetMinSize();
-                        window.Show();
-                    }
-                }
             }
         }
 
 
-        /// Set the value of all preferences.
-        private static void SetPrefValues()
+        /// If EditorPrefs have been lost or have never been initialized, we want to set them to their default values.
+        public static void InitPrefs()
         {
-            EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, System.Convert.ToInt16(_buttonsDisplay));
-            SetIconStyle();
-            SetColorPrefs();
-            SetShortcutPrefs();
+            ResetPrefsToDefault();
+            EditorPrefs.SetBool("GDTB_AnimationTester_initialized", true);
         }
 
 
-        /// Set the value of IconStyle.
-        private static void SetIconStyle()
+        /// Set the value of ShowWelcome.
+        public static void SetWelcome(bool val)
         {
-            EditorPrefs.SetInt(PREFS_ANIMATIONTESTER_ICON_STYLE, (int)_iconStyle);
-            DrawingUtils.LoadTextures(_iconStyle);
+            EditorPrefs.SetBool(PREFS_ANIMATIONTESTER_WELCOME, val);
         }
 
 
-        /// Set the value of a Color preference.
-        private static void SetColorPrefs()
+        /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
+        public static void GetAllPrefValues()
         {
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.ColorToString(_primary));
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
-            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
+            _showWelcome = GetPrefValue(PREFS_ANIMATIONTESTER_WELCOME, _showWelcome_default);
+            GetColorPrefs();
+            _shortcut = GetPrefValue(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut_default); // Shortcut.
+            ParseShortcutValues();
+        }
+
+
+        /// Load color preferences.
+        public static void GetColorPrefs()
+        {
+            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.GetNormalizedColor(_primary_default)); // PRIMARY color.
+            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.GetNormalizedColor(_secondary_default)); // SECONDARY color.
+            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.GetNormalizedColor(_tertiary_default)); // TERTIARY color.
+
+            // If all colors are the same, there's been some issue. Revert to initial dark scheme.
+            if(_primary == _secondary && _primary == _tertiary)
+            {
+                _primary = RGBA.GetNormalizedColor(_primary_default);
+                _secondary = RGBA.GetNormalizedColor(_secondary_default);
+                _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
+            }
+        }
+
+
+
+
+        /// Draw the shortcut selector.
+        private static string DrawShortcutSelector()
+        {
+            // Differentiate between Mac Editor (CMD) and Win editor (CTRL).
+            var platformKey = Application.platform == RuntimePlatform.OSXEditor ? "CMD" : "CTRL";
+            var shortcut = "";
+            ParseShortcutValues();
+
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Shortcut ");
+            GUILayout.Space(20);
+            _modifierKeys[0] = GUILayout.Toggle(_modifierKeys[0], platformKey, EditorStyles.miniButton, GUILayout.Width(50));
+            _modifierKeys[1] = GUILayout.Toggle(_modifierKeys[1], "ALT", EditorStyles.miniButton, GUILayout.Width(40));
+            _modifierKeys[2] = GUILayout.Toggle(_modifierKeys[2], "SHIFT", EditorStyles.miniButton, GUILayout.Width(60));
+            _mainShortcutKeyIndex = EditorGUILayout.Popup(_mainShortcutKeyIndex, _shortcutKeys, GUILayout.Width(60));
+            GUILayout.EndHorizontal();
+
+            // Generate shortcut string.
+            if (_modifierKeys[0] == true)
+            {
+                shortcut += "%|";
+            }
+            if (_modifierKeys[1] == true)
+            {
+                shortcut += "&|";
+            }
+            if (_modifierKeys[2] == true)
+            {
+                shortcut += "#|";
+            }
+            shortcut += _shortcutKeys[_mainShortcutKeyIndex];
+
+            return shortcut;
         }
 
 
@@ -171,15 +190,12 @@ namespace com.immortalhydra.gdtb.animationtester
                 // Get confirmation through dialog (or not if the user doesn't want to).
                 if (EditorUtility.DisplayDialog("Change to dark theme?", "Are you sure you want to change the color scheme to the dark (default) theme?", "Change color scheme", "Cancel"))
                 {
-                    _primary = new Color(_primary_dark.r / 255.0f, _primary_dark.g / 255.0f, _primary_dark.b / 255.0f, 1.0f);
-                    _secondary = new Color(_secondary_dark.r / 255.0f, _secondary_dark.g / 255.0f, _secondary_dark.b / 255.0f, 1.0f);
-                    _tertiary = new Color(_tertiary_dark.r / 255.0f, _tertiary_dark.g / 255.0f, _tertiary_dark.b / 255.0f, 1.0f);
+                    _primary = RGBA.GetNormalizedColor(_primary_dark);
+                    _secondary = RGBA.GetNormalizedColor(_secondary_dark);
+                    _tertiary = RGBA.GetNormalizedColor(_tertiary_dark);
                     SetColorPrefs();
                     GetColorPrefs();
 
-                    _iconStyle = IconStyle.LIGHT;
-                    SetIconStyle();
-                    GetIconStyle();
                     ReloadSkins();
 
                     RepaintOpenWindows();
@@ -190,15 +206,12 @@ namespace com.immortalhydra.gdtb.animationtester
                 // Get confirmation through dialog (or not if the user doesn't want to).
                 if (EditorUtility.DisplayDialog("Change to light theme?", "Are you sure you want to change the color scheme to the light theme?", "Change color scheme", "Cancel"))
                 {
-                    _primary = new Color(_primary_light.r / 255.0f, _primary_light.g / 255.0f, _primary_light.b / 255.0f, 1.0f);
-                    _secondary = new Color(_secondary_light.r / 255.0f, _secondary_light.g / 255.0f, _secondary_light.b / 255.0f, 1.0f);
-                    _tertiary = new Color(_tertiary_light.r / 255.0f, _tertiary_light.g / 255.0f, _tertiary_light.b / 255.0f, 1.0f);
+                    _primary = RGBA.GetNormalizedColor(_primary_light);
+                    _secondary = RGBA.GetNormalizedColor(_secondary_light);
+                    _tertiary = RGBA.GetNormalizedColor(_tertiary_light);
                     SetColorPrefs();
                     GetColorPrefs();
 
-                    _iconStyle = IconStyle.DARK;
-                    SetIconStyle();
-                    GetIconStyle();
                     ReloadSkins();
 
                     RepaintOpenWindows();
@@ -209,10 +222,48 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
+        /// Draw reset button.
+        private static void DrawResetButton()
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space();
+            if (GUILayout.Button("Reset preferences", GUILayout.Width(120)))
+            {
+                ResetPrefsToDefault();
+            }
+            EditorGUILayout.Space();
+            EditorGUILayout.EndHorizontal();
+        }
+
+
+        /// Reset all preferences to default.
+        private static void ResetPrefsToDefault()
+        {
+
+            _showWelcome = _showWelcome_default;
+            _primary = RGBA.GetNormalizedColor(_primary_default);
+            _secondary = RGBA.GetNormalizedColor(_secondary_default);
+            _tertiary = RGBA.GetNormalizedColor(_tertiary_default);
+            _shortcut = _shortcut_default;
+
+            SetPrefValues();
+            GetAllPrefValues();
+        }
+
+
+        /// Set the value of all preferences.
+        private static void SetPrefValues()
+        {
+            SetWelcome(_showWelcome);
+            SetColorPrefs();
+            SetShortcutPrefs();
+        }
+
+
         /// Set the value of the shortcut preference.
         private static void SetShortcutPrefs()
         {
-            if (_newShortcut != _shortcut)
+            if (_newShortcut != _shortcut && _newShortcut != null)
             {
                 _shortcut = _newShortcut;
                 EditorPrefs.SetString(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut);
@@ -222,33 +273,12 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// If preferences have keys already saved in EditorPrefs, get them. Otherwise, set them.
-        public static void GetAllPrefValues()
+        /// Set the value of a Color preference.
+        private static void SetColorPrefs()
         {
-            _buttonsDisplay = (ButtonsDisplayFormat)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_BUTTONS_DISPLAY, _buttonsDisplay_default); // Buttons display.
-            _oldDisplayFormat = _buttonsDisplay;
-            GetIconStyle();
-            GetColorPrefs();
-            _shortcut = GetPrefValue(PREFS_ANIMATIONTESTER_SHORTCUT, _shortcut_default); // Shortcut.
-            ParseShortcutValues();
-        }
-
-
-        /// Get IconStyle.
-        private static void GetIconStyle()
-        {
-            _iconStyle = (IconStyle)EditorPrefs.GetInt(PREFS_ANIMATIONTESTER_ICON_STYLE, _iconStyle_default); // Icon style.
-            _oldIconStyle = _iconStyle;
-            DrawingUtils.LoadTextures(_iconStyle);
-        }
-
-
-        /// Load color preferences.
-        private static void GetColorPrefs()
-        {
-            _primary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, _primary_default); // PRIMARY color.
-            _secondary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, _secondary_default); // SECONDARY color.
-            _tertiary = GetPrefValue(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, _tertiary_default); // TERTIARY color.
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_PRIMARY, RGBA.ColorToString(_primary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_SECONDARY, RGBA.ColorToString(_secondary));
+            EditorPrefs.SetString(PREFS_ANIMATIONTESTER_COLOR_TERTIARY, RGBA.ColorToString(_tertiary));
         }
 
 
@@ -306,42 +336,6 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Draw the shortcut selector.
-        private static string DrawShortcutSelector()
-        {
-            // Differentiate between Mac Editor (CMD) and Win editor (CTRL).
-            var platformKey = Application.platform == RuntimePlatform.OSXEditor ? "CMD" : "CTRL";
-            var shortcut = "";
-            ParseShortcutValues();
-
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Shortcut ");
-            GUILayout.Space(20);
-            _modifierKeys[0] = GUILayout.Toggle(_modifierKeys[0], platformKey, EditorStyles.miniButton, GUILayout.Width(50));
-            _modifierKeys[1] = GUILayout.Toggle(_modifierKeys[1], "ALT", EditorStyles.miniButton, GUILayout.Width(40));
-            _modifierKeys[2] = GUILayout.Toggle(_modifierKeys[2], "SHIFT", EditorStyles.miniButton, GUILayout.Width(60));
-            _mainShortcutKeyIndex = EditorGUILayout.Popup(_mainShortcutKeyIndex, _shortcutKeys, GUILayout.Width(60));
-            GUILayout.EndHorizontal();
-
-            // Generate shortcut string.
-            if (_modifierKeys[0] == true)
-            {
-                shortcut += "%|";
-            }
-            if (_modifierKeys[1] == true)
-            {
-                shortcut += "&|";
-            }
-            if (_modifierKeys[2] == true)
-            {
-                shortcut += "#|";
-            }
-            shortcut += _shortcutKeys[_mainShortcutKeyIndex];
-
-            return shortcut;
-        }
-
-
         /// Get usable values from the shortcut string pref.
         private static void ParseShortcutValues()
         {
@@ -374,40 +368,18 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-        /// Draw reset button.
-        private static void DrawResetButton()
-        {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.Space();
-            if (GUILayout.Button("Reset preferences", GUILayout.Width(120)))
-            {
-                ResetPrefsToDefault();
-            }
-            EditorGUILayout.Space();
-            EditorGUILayout.EndHorizontal();
-        }
-
-
-        /// Reset all preferences to default.
-        private static void ResetPrefsToDefault()
-        {
-            _buttonsDisplay = (ButtonsDisplayFormat)_buttonsDisplay_default;
-            _primary = new Color(_primary_default.r / 255, _primary_default.g / 255, _primary_default.b / 255, _primary_default.a);
-            _secondary = new Color(_secondary_default.r / 255, _secondary_default.g / 255, _secondary_default.b / 255, _secondary_default.a);
-            _tertiary = new Color(_tertiary_default.r / 255, _tertiary_default.g / 255, _tertiary_default.b / 255, _tertiary_default.a);
-            _shortcut = _shortcut_default;
-
-            SetPrefValues();
-            GetAllPrefValues();
-        }
-
-
         /// Reload skins of open windows.
         private static void ReloadSkins()
         {
             if (WindowMain.IsOpen)
             {
                 var window = EditorWindow.GetWindow(typeof(WindowMain)) as WindowMain;
+                window.LoadStyles();
+            }
+
+            if (WindowWelcome.IsOpen)
+            {
+                var window = EditorWindow.GetWindow(typeof(WindowWelcome)) as WindowWelcome;
                 window.LoadStyles();
             }
         }
@@ -421,19 +393,8 @@ namespace com.immortalhydra.gdtb.animationtester
                 EditorWindow.GetWindow(typeof(WindowMain)).Repaint();
             }
         }
-    }
 
+#endregion
 
-    public enum ButtonsDisplayFormat
-    {
-        COOL_ICONS,
-        REGULAR_BUTTONS
-    }
-
-
-    public enum IconStyle
-    {
-        DARK,
-        LIGHT
     }
 }
