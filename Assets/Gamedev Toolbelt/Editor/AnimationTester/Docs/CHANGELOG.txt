@@ -1,3 +1,7 @@
+====== 2016.6 ======
+
+ * Keep "Open AnimationTester" menu at the top of the menu when the shortcut is changed.
+
 ====== 2016.5 ======
 
  * Animators/Animations and clips can now be cycled through with Prev/Next buttons.
