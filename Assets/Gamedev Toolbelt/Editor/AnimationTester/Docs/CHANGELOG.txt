@@ -1,16 +1,15 @@
-====== 1.2 ======
+====== 2016.5 ======
 
-* FEATURE: Animators/Animations and clips can now be cycled through with Prev/Next buttons.
-* UX: added border to buttons.
-* Removed old icon buttons, unifying interface to text buttons for clarity.
-* Removed redundant Select and Refresh buttons.
+ * Animators/Animations and clips can now be cycled through with Prev/Next buttons.
+ * Added border to buttons.
+ * Removed old buttons, unifying interface to text buttons for clarity.
 
-====== 1.1 ======
+====== 2016.4 ======
 
  * AnimationTester now also supports gameobjects with the Animation component, not only Animators!
  * New icons and button style!
  * Buttons are now highlighted when hovered over.
 
-====== 1.0 ======
+====== 2016.3 ======
 
-* Initial release
+ * Initial public release
