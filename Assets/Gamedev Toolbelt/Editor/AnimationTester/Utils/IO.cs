@@ -24,7 +24,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 {
                     if(line.Contains("[MenuItem"))
                     {
-                        writer.WriteLine("        [MenuItem(" + '"' + "Window/Gamedev Toolbelt/AnimationTester/Open AnimationTester " + aShortcut + '"' + ")]");
+                        writer.WriteLine("        [MenuItem(" + '"' + "Window/Gamedev Toolbelt/AnimationTester/Open AnimationTester " + aShortcut + '"' + ", false, 1)]");
                     }
                     else
                     {
