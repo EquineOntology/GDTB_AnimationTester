@@ -54,11 +54,11 @@ namespace com.immortalhydra.gdtb.animationtester
 
         private void OnEnable()
         {
-            #if UNITY_5_3_OR_NEWER || UNITY_5_1 || UNITY_5_2
-                titleContent = new GUIContent("AnimationTester");
-            #else
-                title = "AnimationTester";
-            #endif
+        #if UNITY_5_3_OR_NEWER || UNITY_5_1 || UNITY_5_2
+            titleContent = new GUIContent("AnimationTester");
+        #else
+            title = "AnimationTester";
+        #endif
 
             Instance = this;
 
@@ -80,9 +80,9 @@ namespace com.immortalhydra.gdtb.animationtester
                 // Build the backups.
                 _clipNamesBackup = AnimationClipHandler.BuildClipNamesBackup(_animators, _animations);
 
-                #if !UNITY_5_4_OR_NEWER
-                _controllersBackup = AnimatorHandler.BuildControllersBackup(_animators);
-                #endif
+            #if !UNITY_5_4_OR_NEWER
+                controllersBackup = AnimatorHandler.BuildControllersBackup(_animators);
+            #endif
             }
         }
 
