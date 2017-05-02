@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Animations;
-#if UNITY_5_4_OR_NEWER
+#if UNITY_5_4 || UNITY_5_6
 using UnityEngine.Experimental.Director;
 #endif
 
@@ -9,6 +10,14 @@ namespace com.immortalhydra.gdtb.animationtester
 {
     public static class AnimatorHandler
     {
+
+#region FIELDS
+
+    #if UNITY_5_6_OR_NEWER
+        private static List<PlayableGraph> _playableGraphs = new List<PlayableGraph>();
+    #endif
+
+#endregion
 
 #region METHODS
 
@@ -42,7 +51,42 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-    #if UNITY_5_4_OR_NEWER
+    #if UNITY_5_6_OR_NEWER
+
+        static AnimatorHandler() {
+            EditorApplication.playmodeStateChanged += ModeChanged;
+        }
+
+        public static void PlayAnimation (Animator animator, AnimationClip clip)
+        {
+            var graph = PlayableGraph.CreateGraph();
+            var output = graph.CreateAnimationOutput("Animation", animator);
+            var playableClip = graph.CreateAnimationClipPlayable(clip);
+            output.sourcePlayable = playableClip;
+            graph.CreateAnimationClipPlayable(clip);
+            graph.Play();
+
+            _playableGraphs.Add(graph);
+        }
+
+        public static void ModeChanged ()
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode &&
+                EditorApplication.isPlaying )
+            {
+                DisposeOfPlayableGraphs();
+            }
+        }
+
+        private static void DisposeOfPlayableGraphs()
+        {
+            foreach (var graph in _playableGraphs)
+            {
+                graph.Destroy();
+            }
+        }
+
+    #elif UNITY_5_4
 
         public static void PlayAnimation (Animator animator, AnimationClip clip)
         {
