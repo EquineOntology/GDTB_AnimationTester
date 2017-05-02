@@ -1,3 +1,6 @@
+====== 2017.2 =====
+* Add compatibility with Unity 5.6
+
 ====== 1.2 ======
 
 * FEATURE: Animators/Animations and clips can now be cycled through with Prev/Next buttons.
