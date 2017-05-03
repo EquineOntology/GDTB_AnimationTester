@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Globalization;
 
 namespace com.immortalhydra.gdtb.animationtester
 {
@@ -9,8 +10,10 @@ namespace com.immortalhydra.gdtb.animationtester
 #region METHODS
         public static string ColorToString(Color aColor)
         {
-            string colorString = "";
-            colorString = aColor.r.ToString() + '/' + aColor.g.ToString() + '/' + aColor.b.ToString() + '/' + aColor.a.ToString();
+            var colorString = aColor.r.ToString(CultureInfo.InvariantCulture) + '/' +
+                              aColor.g.ToString(CultureInfo.InvariantCulture) + '/' +
+                              aColor.b.ToString(CultureInfo.InvariantCulture) + '/' +
+                              aColor.a.ToString(CultureInfo.InvariantCulture);
             return colorString;
         }
 

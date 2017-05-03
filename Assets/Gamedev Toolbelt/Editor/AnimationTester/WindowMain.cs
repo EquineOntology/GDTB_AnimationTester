@@ -19,9 +19,9 @@ namespace com.immortalhydra.gdtb.animationtester
     // Animatables: gameobjects with Animator/Animation component.
     private List<Animator> _animators;
     private List<Animation> _animations;
-    private bool _collectedAnimatables = false;
+    private bool _collectedAnimatables;
     private string[] _animatableNames;
-    private int _currentAnimatablesIndex = 0;
+    private int _currentAnimatablesIndex;
 
     // ControllersBackup: a backup of all original animator controllers.
     // Used to reassign the original controller to an animator for Unity<5.4.
@@ -29,7 +29,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
     // AnimatableClips: Animation Clips of an animatable.
     private AnimationClip[] _animatableClips;
-    private int _currentClipIndex = 0;
+    private int _currentClipIndex;
     private string[] _animatableClipNames;
     private bool _shouldUpdateClips = true;
 
@@ -39,9 +39,10 @@ namespace com.immortalhydra.gdtb.animationtester
     private Dictionary<int,string[]> _clipNamesBackup = new  Dictionary<int,string[]>();
 
     // Layouting and styling;
-    private int _offset = 5;
+    private const int _OFFSET = 5;
+
     private GUISkin _skin;
-    private GUIStyle _style_buttonText, _style_boldLabel;
+    private GUIStyle _buttonTextStyle, _boldLabelStyle;
 
 	// Properties.
     public static WindowMain Instance { get; private set; }
@@ -147,13 +148,13 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Load custom styles and apply colors from preferences.
         public void LoadStyles()
         {
-            _style_buttonText = _skin.GetStyle("GDTB_AnimationTester_buttonText");
-            _style_buttonText.active.textColor = Preferences.Color_Tertiary;
-            _style_buttonText.normal.textColor = Preferences.Color_Tertiary;
+            _buttonTextStyle = _skin.GetStyle("GDTB_AnimationTester_buttonText");
+            _buttonTextStyle.active.textColor = Preferences.Color_Tertiary;
+            _buttonTextStyle.normal.textColor = Preferences.Color_Tertiary;
 
-            _style_boldLabel = _skin.GetStyle("GDTB_AnimationTester_bold");
-            _style_boldLabel.active.textColor = Preferences.Color_Secondary;
-            _style_boldLabel.normal.textColor = Preferences.Color_Secondary;
+            _boldLabelStyle = _skin.GetStyle("GDTB_AnimationTester_bold");
+            _boldLabelStyle.active.textColor = Preferences.Color_Secondary;
+            _boldLabelStyle.normal.textColor = Preferences.Color_Secondary;
 
             _skin.settings.selectionColor = Preferences.Color_Secondary;
         }
@@ -171,14 +172,14 @@ namespace com.immortalhydra.gdtb.animationtester
             }
 
             // Get existing open window or, if none exists, make a new one.
-            var window = (WindowMain)EditorWindow.GetWindow (typeof (WindowMain));
+            var window = (WindowMain)GetWindow (typeof (WindowMain));
             window.minSize = new Vector2(270f, 150f);
             window.LoadSkin();
             window.LoadStyles();
 
             window.Show();
 
-            if(Preferences.ShowWelcome == true)
+            if(Preferences.ShowWelcome)
             {
                 WindowWelcome.Init();
             }
@@ -205,7 +206,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 labelSize = EditorStyles.wordWrappedMiniLabel.CalcSize(labelContent);
             #endif
 
-            var labelRect = new Rect(position.width / 2 - labelSize.x / 2, position.height / 2 - labelSize.y / 2 - _offset * 2.5f, labelSize.x, labelSize.y);
+            var labelRect = new Rect(position.width / 2 - labelSize.x / 2, position.height / 2 - labelSize.y / 2 - _OFFSET * 2.5f, labelSize.x, labelSize.y);
             #if UNITY_5_3_OR_NEWER
                 EditorGUI.LabelField(labelRect, labelContent, EditorStyles.centeredGreyMiniLabel);
             #else
@@ -217,9 +218,9 @@ namespace com.immortalhydra.gdtb.animationtester
         // Draws the popup with the list of gameobjects with animatables, and the select button.
         private void DrawListOfAnimatables()
         {
-            var labelRect = new Rect(_offset, _offset, _popupWidth, _buttonHeight);
-            var popupRect = new Rect(_offset, _offset * 5, _popupWidth, _buttonHeight);
-            EditorGUI.LabelField(labelRect, "Select gameobject:", _style_boldLabel);
+            var labelRect = new Rect(_OFFSET, _OFFSET, _popupWidth, _buttonHeight);
+            var popupRect = new Rect(_OFFSET, _OFFSET * 5, _popupWidth, _buttonHeight);
+            EditorGUI.LabelField(labelRect, "Select gameobject:", _boldLabelStyle);
 
             var tempIndex = _currentAnimatablesIndex;
             _currentAnimatablesIndex = EditorGUI.Popup(popupRect, _currentAnimatablesIndex, _animatableNames);
@@ -259,16 +260,16 @@ namespace com.immortalhydra.gdtb.animationtester
         // Draws the popup with the list of animations for currently selected animatable.
         private void DrawListOfAnimations()
         {
-            if (_shouldUpdateClips == true)
+            if (_shouldUpdateClips)
             {
                 UpdateClips();
                 _shouldUpdateClips = false;
             }
 
-            var labelRect = new Rect(_offset, _iconSize * 2.5f, _popupWidth, _buttonHeight);
-            var popupRect = new Rect(_offset, _iconSize * 2.3f + _offset * 5, _popupWidth, _buttonHeight);
+            var labelRect = new Rect(_OFFSET, _iconSize * 2.5f, _popupWidth, _buttonHeight);
+            var popupRect = new Rect(_OFFSET, _iconSize * 2.3f + _OFFSET * 5, _popupWidth, _buttonHeight);
 
-            EditorGUI.LabelField(labelRect, "Select clip:", _style_boldLabel);
+            EditorGUI.LabelField(labelRect, "Select clip:", _boldLabelStyle);
             _currentClipIndex = EditorGUI.Popup(popupRect, _currentClipIndex, _animatableClipNames);
 
 
@@ -304,7 +305,7 @@ namespace com.immortalhydra.gdtb.animationtester
             {
                 if(!Application.isPlaying)
                 {
-                    var sceneWindow = (SceneView)EditorWindow.GetWindow(typeof(SceneView));
+                    var sceneWindow = (SceneView)GetWindow(typeof(SceneView));
                     sceneWindow.ShowNotification(new GUIContent("To play an animation you must be in Play mode."));
                 }
                 else
@@ -343,26 +344,26 @@ namespace com.immortalhydra.gdtb.animationtester
 
         private void SetupButton_PreviousGameobject(out Rect aRect, out GUIContent aContent)
         {
-            aRect = new Rect(_popupWidth + _offset * 2, _iconSize * 1.5f  + _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aRect = new Rect(_popupWidth + _OFFSET * 2, _iconSize * 1.5f  + _OFFSET / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
             aContent = new GUIContent("Prev", "Previous gameobject");
         }
 
         private void SetupButton_NextGameobject(out Rect aRect, out GUIContent aContent)
         {
-            aRect = new Rect(_popupWidth + _buttonWidth - _offset, _iconSize * 1.5f  + _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aRect = new Rect(_popupWidth + _buttonWidth - _OFFSET, _iconSize * 1.5f  + _OFFSET / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
             aContent = new GUIContent("Next", "Next gameobject");
         }
 
 
         private void SetupButton_PreviousClip(out Rect aRect, out GUIContent aContent)
         {
-            aRect = new Rect(_popupWidth + _offset * 2,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aRect = new Rect(_popupWidth + _OFFSET * 2,  _iconSize * 4 - _OFFSET / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
             aContent = new GUIContent("Prev", "Previous clip");
         }
 
         private void SetupButton_NextClip(out Rect aRect, out GUIContent aContent)
         {
-            aRect = new Rect(_popupWidth + _buttonWidth - _offset,  _iconSize * 4 - _offset / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
+            aRect = new Rect(_popupWidth + _buttonWidth - _OFFSET,  _iconSize * 4 - _OFFSET / 2 - _buttonHeight / 2, _buttonWidth - 20, _buttonHeight);
             aContent = new GUIContent("Next", "Next clip");
         }
 
@@ -371,14 +372,14 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             aRect = new Rect(0,0, _buttonWidth, _buttonHeight);
             aRect.x = position.width / 2 - _buttonWidth / 2;
-            aRect.y = _iconSize * 4 + _offset * 3.5f;
+            aRect.y = _iconSize * 4 + _OFFSET * 3.5f;
             aContent = new GUIContent("Play", "Play selected clip");
         }
 
 
         private void SetupButton_Settings(out Rect aRect, out GUIContent aContent)
         {
-            aRect = new Rect(_offset, position.height - _buttonHeight - _offset, _buttonWidth, _buttonHeight);
+            aRect = new Rect(_OFFSET, position.height - _buttonHeight - _OFFSET, _buttonWidth, _buttonHeight);
             aContent = new GUIContent("Settings", "Open Settings");
         }
 
@@ -514,7 +515,7 @@ namespace com.immortalhydra.gdtb.animationtester
         /// Update the list of animationClips from an animatable.
         private void UpdateClipsList(Animator animatable)
         {
-            _animatableClips = UnityEditor.AnimationUtility.GetAnimationClips(animatable.gameObject);
+            _animatableClips = AnimationUtility.GetAnimationClips(animatable.gameObject);
         }
     #endregion
 
@@ -558,7 +559,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
             var gottenValue = _controllersBackup.TryGetValue(key, out originalAnimator);
 
-            if (gottenValue == true)
+            if (gottenValue)
             {
                 animator.runtimeAnimatorController = originalAnimator;
             }
@@ -570,12 +571,12 @@ namespace com.immortalhydra.gdtb.animationtester
         {
             if (WindowWelcome.IsOpen)
             {
-                EditorWindow.GetWindow(typeof(WindowWelcome)).Close();
+                GetWindow(typeof(WindowWelcome)).Close();
             }
 
             if (WindowHelp.IsOpen)
             {
-                EditorWindow.GetWindow(typeof(WindowHelp)).Close();
+                GetWindow(typeof(WindowHelp)).Close();
             }
         }
 
