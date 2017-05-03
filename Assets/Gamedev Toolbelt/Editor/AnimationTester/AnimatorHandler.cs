@@ -1,9 +1,12 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
-using UnityEditor.Animations;
-#if UNITY_5_4 || UNITY_5_6
+#if UNITY_2017_1_OR_NEWER
+using UnityEngine.Playables;
+#elif UNITY_5_4 || UNITY_5_6
 using UnityEngine.Experimental.Director;
+#else
+using UnityEditor.Animations;
 #endif
 
 namespace com.immortalhydra.gdtb.animationtester
