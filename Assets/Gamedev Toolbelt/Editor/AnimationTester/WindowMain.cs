@@ -81,7 +81,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 _clipNamesBackup = AnimationClipHandler.BuildClipNamesBackup(_animators, _animations);
 
             #if !UNITY_5_4_OR_NEWER
-                controllersBackup = AnimatorHandler.BuildControllersBackup(_animators);
+                _controllersBackup = AnimatorHandler.BuildControllersBackup(_animators);
             #endif
             }
         }
