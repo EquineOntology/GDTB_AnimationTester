@@ -1,3 +1,6 @@
+====== 2017.2 =====
+* Add compatibility with Unity 2017.1
+
 ====== 2017.1 =====
 * Add compatibility with Unity 5.6
 
