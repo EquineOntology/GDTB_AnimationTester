@@ -1,10 +1,9 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
-#if UNITY_2017_2_OR_NEWER
-using UnityEngine.Animations;
-#elif UNITY_2017_1
+#if UNITY_2017_1_OR_NEWER
 using UnityEngine.Playables;
+using UnityEngine.Animations;
 #elif UNITY_5_4 || UNITY_5_6
 using UnityEngine.Experimental.Director;
 #else
@@ -56,9 +55,9 @@ namespace com.immortalhydra.gdtb.animationtester
         }
 
 
-    #if UNITY_5_6_OR_NEWER
+#if UNITY_5_6_OR_NEWER
 
-        #if UNITY_5_6 || UNITY_2017_1
+#if UNITY_5_6
         static AnimatorHandler() {
             EditorApplication.playmodeStateChanged += ModeChanged;
         }
@@ -82,6 +81,32 @@ namespace com.immortalhydra.gdtb.animationtester
             {
                 DisposeOfPlayableGraphs();
             }
+        }
+
+        #elif UNITY_2017_1
+        static AnimatorHandler()
+        {
+            EditorApplication.playmodeStateChanged += ModeChanged;
+        }
+        
+        public static void ModeChanged()
+        {
+            if (!EditorApplication.isPlayingOrWillChangePlaymode &&
+                EditorApplication.isPlaying)
+            {
+                DisposeOfPlayableGraphs();
+            }
+        }
+        public static void PlayAnimation(Animator animator, AnimationClip clip)
+        {
+            var graph = PlayableGraph.Create();
+            // var output = graph.GetCreateAnimationOutput("Animation", animator);
+            var playableClip = AnimationClipPlayable.Create(graph, clip);
+            var output = AnimationPlayableOutput.Create(graph, "Animation", animator);
+            output.SetSourcePlayable(playableClip);
+            _playableGraphs.Add(graph);
+            graph.Play();
+
         }
 
         #elif UNITY_2017_2_OR_NEWER
