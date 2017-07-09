@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEditor;
-#if UNITY_2017_1_OR_NEWER
-using UnityEngine.Playables;
 #if UNITY_2017_2_OR_NEWER
 using UnityEngine.Animations;
+#elif UNITY_2017_1
+using UnityEngine.Playables;
 #elif UNITY_5_4 || UNITY_5_6
 using UnityEngine.Experimental.Director;
 #else
