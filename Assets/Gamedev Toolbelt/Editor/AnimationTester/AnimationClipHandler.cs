@@ -58,7 +58,7 @@ namespace com.immortalhydra.gdtb.animationtester
                 }
                 else
                 {
-                    clipNames = new string[] { "" };
+                    clipNames = new[] { "" };
                 }
                 backup.Add(key, clipNames);
             }

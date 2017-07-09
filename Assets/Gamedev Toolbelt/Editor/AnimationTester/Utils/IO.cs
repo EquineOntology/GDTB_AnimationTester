@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.IO;
 using System;
 
@@ -17,9 +16,9 @@ namespace com.immortalhydra.gdtb.animationtester
             var writer = new StreamWriter(tempFile, false);
             var reader = new StreamReader(file);
 
-            var line = "";
             try
             {
+                string line;
                 while ((line = reader.ReadLine()) != null)
                 {
                     if(line.Contains("[MenuItem"))

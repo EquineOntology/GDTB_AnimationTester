@@ -1,19 +1,17 @@
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 namespace com.immortalhydra.gdtb.animationtester
 {
 	public static class Controls
 	{
 
-#region METHODS
+	#region METHODS
 
 		public static bool Button(Rect controlRect, GUIContent controlContent)
 		{
 			var shouldFire = false;
 			var controlID = GUIUtility.GetControlID(FocusType.Passive);
-           // var state
 
 			switch (Event.current.GetTypeForControl(controlID))
 			{

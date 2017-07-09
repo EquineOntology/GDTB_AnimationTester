@@ -12,9 +12,9 @@ namespace com.immortalhydra.gdtb.animationtester
         // Fields.
         private GUISkin _skin;
         private GUIStyle _wordWrappedColoredLabel, _headerLabel;
-        private int _offset = 5;
+        private const int _OFFSET = 5;
         private bool _welcomeValue;
-        private float _usableWidth = 0;
+        private float _usableWidth;
 
         // Properties.
         public static WindowWelcome Instance { get; private set; }
@@ -46,42 +46,42 @@ namespace com.immortalhydra.gdtb.animationtester
 
         private void OnGUI()
         {
-            _usableWidth = position.width - _offset * 2;
+            _usableWidth = position.width - _OFFSET * 2;
 
             DrawWindowBackground();
             var label1Content = new GUIContent("Hello! Using AnimationTester is a snap.");
             var label1Height = _wordWrappedColoredLabel.CalcHeight(label1Content, _usableWidth);
-            var label1Rect = new Rect(_offset * 2, _offset * 2, _usableWidth - _offset * 2, label1Height);
+            var label1Rect = new Rect(_OFFSET * 2, _OFFSET * 2, _usableWidth - _OFFSET * 2, label1Height);
             EditorGUI.LabelField(label1Rect, label1Content, _headerLabel);
 
             var label2Content = new GUIContent("1. Select the gameobject whose animations you want to test from the first dropdown.");
             var label2Height = _wordWrappedColoredLabel.CalcHeight(label2Content, _usableWidth);
-            var label2Rect = new Rect(_offset * 2, _offset * 2 + 20, _usableWidth - _offset * 2, label2Height);
+            var label2Rect = new Rect(_OFFSET * 2, _OFFSET * 2 + 20, _usableWidth - _OFFSET * 2, label2Height);
             EditorGUI.LabelField(label2Rect, label2Content, _wordWrappedColoredLabel);
 
             var label3Content = new GUIContent("2. Choose the animation you want to test from the second dropdown.");
             var label3Height = _wordWrappedColoredLabel.CalcHeight(label3Content, _usableWidth);
-            var label3Rect = new Rect(_offset * 2, _offset * 2 + 60, _usableWidth - _offset * 2, label3Height);
+            var label3Rect = new Rect(_OFFSET * 2, _OFFSET * 2 + 60, _usableWidth - _OFFSET * 2, label3Height);
             EditorGUI.LabelField(label3Rect, label3Content, _wordWrappedColoredLabel);
 
             var label4Content = new GUIContent("3. Enter Play mode in Unity, then press Play!");
-            var label4Rect = new Rect(_offset * 2, _offset * 2 + 100, _usableWidth - _offset * 2, 0);;
+            var label4Rect = new Rect(_OFFSET * 2, _OFFSET * 2 + 100, _usableWidth - _OFFSET * 2, 0);
             label4Rect.height = _wordWrappedColoredLabel.CalcHeight(label4Content, _usableWidth);
             EditorGUI.LabelField(label4Rect, label4Content, _wordWrappedColoredLabel);
 
             var label5Content = new GUIContent("There are many settings you can change, a new section has been added to the Preferences window.");
-            var label5Rect = new Rect(_offset * 2, _offset * 2 + 140, _usableWidth - _offset * 2, 0);;
+            var label5Rect = new Rect(_OFFSET * 2, _OFFSET * 2 + 140, _usableWidth - _OFFSET * 2, 0);
             label5Rect.height = _wordWrappedColoredLabel.CalcHeight(label5Content, _usableWidth);
             EditorGUI.LabelField(label5Rect, label5Content, _wordWrappedColoredLabel);
 
             var reviewContent = new GUIContent("If you like the extension, please leave a review!\nYou can do so by clicking this sentence, a browser window will be opened.");
-            var reviewRect = new Rect(_offset * 2, _offset * 2 + 180, _usableWidth - _offset * 2, 0);;
+            var reviewRect = new Rect(_OFFSET * 2, _OFFSET * 2 + 180, _usableWidth - _OFFSET * 2, 0);
             reviewRect.height = _headerLabel.CalcHeight(reviewContent, _usableWidth);
             EditorGUIUtility.AddCursorRect(reviewRect, MouseCursor.Link);
             EditorGUI.LabelField(reviewRect, reviewContent, _headerLabel);
             if (Event.current.type == EventType.MouseUp && reviewRect.Contains(Event.current.mousePosition))
             {
-                UnityEngine.Application.OpenURL("https://www.assetstore.unity3d.com/en/#!/content/70010");
+                Application.OpenURL("https://www.assetstore.unity3d.com/en/#!/content/70010");
             }
 
             DrawToggle();
@@ -95,7 +95,7 @@ namespace com.immortalhydra.gdtb.animationtester
         public static void Init()
         {
             // Get existing open window or if none, make a new one.
-            var window = (WindowWelcome)EditorWindow.GetWindow(typeof(WindowWelcome));
+            var window = (WindowWelcome)GetWindow(typeof(WindowWelcome));
             window.minSize = new Vector2(360f, 300f);
             window.LoadSkin();
             window.Show();
@@ -136,7 +136,7 @@ namespace com.immortalhydra.gdtb.animationtester
 
         private void DrawToggle()
         {
-            var rect = new Rect(_offset * 2, position.height - 20 - _offset, position.width, 20);
+            var rect = new Rect(_OFFSET * 2, position.height - 20 - _OFFSET, position.width, 20);
             _welcomeValue = EditorGUI.ToggleLeft(rect, " Show this window every time AnimationTester is opened", _welcomeValue, _wordWrappedColoredLabel);
             if (_welcomeValue != Preferences.ShowWelcome)
             {
