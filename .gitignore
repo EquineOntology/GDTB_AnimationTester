@@ -27,3 +27,6 @@ sysinfo.txt
 .vscode/settings.json
 /Assets/Orca/
 /Assets/Raptor/
+
+# Local
+.DS_Store
